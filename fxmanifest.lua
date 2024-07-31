@@ -14,8 +14,16 @@ shared_scripts {
 }
 server_scripts {
 	'@oxmysql/lib/MySQL.lua',
+	'bridge/esx/server.lua',
+	'bridge/qb/server.lua',
 	'server/*.lua'
 }
 client_scripts {
+	'bridge/esx/client.lua',
+	'bridge/qb/client.lua',
 	'client/*.lua'
 }
+
+
+files { 'web/**' }
+ui_page 'web/index.html'
