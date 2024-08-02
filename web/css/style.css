@@ -672,14 +672,21 @@ button:hover {
 }
 
 .table-wrapper::-webkit-scrollbar {
-    border-radius: 100vh;
-    background: rgba(53, 185, 193, 0.40);
-    width: 1px;
+    width: 12px;
+    height: 12px;
 }
 
+.table-wrapper::-webkit-scrollbar-track {
+    background: rgba(53, 185, 193, 0.20);
+    border-radius: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(53, 185, 193, 0.80);
+}
 .table-wrapper::-webkit-scrollbar-thumb {
-    border-radius: 100vh;
-    background: #35B9C1;
+    background: rgba(53, 185, 193, 0.60);
+    border-radius: 10px;
 }
 
 .table-user-stats {

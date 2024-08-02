@@ -1,6 +1,47 @@
 if not lib then return end
 local Players = {}
 local Query = {}
+local steamAPI = GetConvar('steam_webApiKey', '')
+
+
+if steamAPI == '' then
+    warn('To load players steam images in battle pass, please set up the steam_webApiKey in your server.cfg file.')
+end
+
+
+local function GetAvatar(playerId)
+    local p = promise.new()
+    local steam = GetPlayerIdentifierByType(playerId, 'steam')
+
+    if steam then
+        local steamID = tonumber(steam:gsub('steam:', ''), 16)
+
+        PerformHttpRequest(('https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v2/?key=%s&steamids=%s'):format(steamAPI, steamID), function(err, text, headers)
+            local info = json.decode(text)
+
+            if info then
+                p:resolve(info.response.players[1].avatarfull)
+            end
+        end)
+    else
+        p:resolve(Config.DefaultImage)
+    end
+
+    return Citizen.Await(p)
+end
+
+
+local function CreatePlayer(playerId, data)
+    local self = {
+        id = playerId,
+        name = GetPlayerName(playerId),
+        data = json.decode(data[1].battlepass) or { --[[isto sta i u default longtext stavit]] },
+        identifier = GetIdentifier(playerId),
+        avatar = GetAvatar(playerId)
+    }
+
+    Players[playerId] = self
+end
 
 MySQL.ready(function()
     if Framework.esx then
@@ -46,14 +87,7 @@ MySQL.ready(function()
             local query = MySQL.query.await(Query.select, { identifier })
 
             if query then
-                local self = {
-                    id = playerId,
-                    name = GetPlayerName(playerId),
-                    data = json.decode(query[1].battlepass) or { --[[isto sta i u default longtext stavit]] },
-                    identifier = identifier
-                }
-
-                Players[playerId] = self
+                CreatePlayer(playerId, query)
             end
         end
     end
@@ -65,14 +99,7 @@ AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
         local query = MySQL.query.await(Query.select, { xPlayer.identifier })
 
         if query then
-            local self = {
-                id = playerId,
-                name = GetPlayerName(playerId),
-                data = json.decode(query[1].battlepass) or {},
-                identifier = xPlayer.identifier
-            }
-
-            Players[self.id] = self
+            CreatePlayer(playerId, query)
         end
     end
 end)
@@ -94,3 +121,10 @@ lib.addCommand(Config.Commands.battlepass.name, {
 }, function(source, args, raw)
     TriggerClientEvent('uniq_battlepass:client:OpenMenu', source, Players[source])
 end)
+
+
+
+local day_of_month = tonumber(os.date("%d"))
+local week_of_month = math.ceil(day_of_month / 7)
+
+print("Current week of the month: " .. week_of_month)
