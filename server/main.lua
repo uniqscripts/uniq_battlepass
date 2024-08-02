@@ -122,9 +122,20 @@ lib.addCommand(Config.Commands.battlepass.name, {
     TriggerClientEvent('uniq_battlepass:client:OpenMenu', source, Players[source])
 end)
 
+-- shema
+lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(source)
+    local options = {}
 
+    for k,v in pairs(Players) do
+        options[#options + 1] = {
+            name = v.name,
+            tier = 0,
+            xp = 0,
+            premium = false,
+            taskdone = 0,
+            avatar = v.avatar
+        }
+    end
 
-local day_of_month = tonumber(os.date("%d"))
-local week_of_month = math.ceil(day_of_month / 7)
-
-print("Current week of the month: " .. week_of_month)
+    return options
+end)

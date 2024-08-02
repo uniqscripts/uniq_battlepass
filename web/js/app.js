@@ -51,7 +51,7 @@ function OpenScoreboard() {
             userInfo.className = 'table-user-info';
             const userImg = document.createElement('img');
             userImg.className = 'table-steam-img';
-            userImg.src = 'img/uniq_logo.png';
+            userImg.src = item.avatar;
             const userName = document.createElement('h3');
             userName.className = 'table-h3';
             userName.textContent = item.name;
@@ -85,14 +85,16 @@ function OpenScoreboard() {
 
         const topPlayer = data[0];
 
-        $('.table-user-stats h3.table-h3').first().text('#1');
-        $('.table-user-stats .table-user-info.table-steam-img').attr('src', 'img/new_logo.png');
-        $('.table-user-stats .table-user-info h3.table-h3').text(topPlayer.name);
-        $('.table-user-stats h3.table-h3').eq(2).text(topPlayer.tier);
-        $('.table-user-stats h3.table-h3').eq(3).text(topPlayer.xp.toLocaleString());
-        $('.table-user-stats h3.table-h3').eq(4).text(topPlayer.premium === true ? 'Premium' : 'Free');
-        $('.table-user-stats h3.table-h3').eq(4).attr('id', topPlayer.premium === true ? 'table-premium-pass' : 'table-free-pass' );
-        $('.table-user-stats h3.table-h3').last().text(topPlayer.taskdone);
+        if (topPlayer) {
+            $('.table-user-stats h3.table-h3').first().text('#1');
+            $('.table-user-stats .table-user-info .table-steam-img').attr('src', topPlayer.avatar);
+            $('.table-user-stats .table-user-info h3.table-h3').text(topPlayer.name);
+            $('.table-user-stats h3.table-h3').eq(2).text(topPlayer.tier);
+            $('.table-user-stats h3.table-h3').eq(3).text(topPlayer.xp.toLocaleString());
+            $('.table-user-stats h3.table-h3').eq(4).text(topPlayer.premium === true ? 'Premium' : 'Free');
+            $('.table-user-stats h3.table-h3').eq(4).attr('id', topPlayer.premium === true ? 'table-premium-pass' : 'table-free-pass' );
+            $('.table-user-stats h3.table-h3').last().text(topPlayer.taskdone);
+        }
     });
 }
 
