@@ -20,7 +20,7 @@ local function GetAvatar(playerId)
             local info = json.decode(text)
 
             if info then
-                p:resolve(info.response.players[1].avatarfull)
+                p:resolve(info.response.players[1].avatarfull or Config.DefaultImage)
             end
         end)
     else
@@ -35,7 +35,7 @@ local function CreatePlayer(playerId, data)
     local self = {
         id = playerId,
         name = GetPlayerName(playerId),
-        data = json.decode(data[1].battlepass) or { --[[isto sta i u default longtext stavit]] },
+        data = json.decode(data[1].battlepass) or {}, --[[isto sta i u default longtext stavit]]
         identifier = GetIdentifier(playerId),
         avatar = GetAvatar(playerId)
     }

@@ -34,18 +34,16 @@ function OpenScoreboard() {
     $.post(`https://${resource}/OpenScoreboard`, JSON.stringify({}), function(response) {
         const tableWrapper = document.querySelector('.table-wrapper');
 
-        tableWrapper.innerHTML = '';  // Clear existing table rows
+        tableWrapper.innerHTML = '';
 
         const data = JSON.parse(response);
 
-        // Sort data array by XP in descending order
         data.sort((a, b) => b.xp - a.xp);
 
         data.forEach((item, index) => {
             const row = document.createElement('div');
             row.className = 'table-row';
 
-            // Create and append elements to the row based on the data
             const rank = document.createElement('h3');
             rank.className = 'table-h3';
             rank.textContent = `#${index + 1}`;
@@ -55,7 +53,7 @@ function OpenScoreboard() {
             userInfo.className = 'table-user-info';
             const userImg = document.createElement('img');
             userImg.className = 'table-steam-img';
-            userImg.src = 'img/uniq_logo.png';  // Adjust image source if needed
+            userImg.src = 'img/uniq_logo.png';
             const userName = document.createElement('h3');
             userName.className = 'table-h3';
             userName.textContent = item.name;
@@ -70,12 +68,12 @@ function OpenScoreboard() {
 
             const xp = document.createElement('h3');
             xp.className = 'table-h3';
-            xp.textContent = item.xp.toLocaleString();  // Format XP with commas
+            xp.textContent = item.xp.toLocaleString();
             row.appendChild(xp);
 
             const bp = document.createElement('h3');
             bp.className = 'table-h3';
-            bp.id = item.bp === 'Premium' ? 'table-premium-pass' : '';  // Apply special ID if needed
+            bp.id = item.bp === 'Premium' ? 'table-premium-pass' : '';
             bp.textContent = item.bp;
             row.appendChild(bp);
 
