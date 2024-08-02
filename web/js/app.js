@@ -5,7 +5,6 @@ $(function() {
 	
 	window.addEventListener('message', function(event) {
 		if (event.data.enable) {
-            console.log(JSON.stringify(event.data.img))
             $('.steam-nick').text('Hello ' + event.data.info.name + '!');
             $('.steam-image').attr('src', event.data.info.avatar);
 			$('body').fadeIn();
@@ -27,7 +26,6 @@ $(function() {
 		}
 	};
 });
-
 
 
 function OpenScoreboard() {
@@ -73,8 +71,8 @@ function OpenScoreboard() {
 
             const bp = document.createElement('h3');
             bp.className = 'table-h3';
-            bp.id = item.bp === 'Premium' ? 'table-premium-pass' : '';
-            bp.textContent = item.bp;
+            bp.id = item.premium === true ? 'table-premium-pass' : '';
+            bp.textContent = item.premium === true ? 'Premium' : 'Free';
             row.appendChild(bp);
 
             const taskdone = document.createElement('h3');
@@ -92,13 +90,8 @@ function OpenScoreboard() {
         $('.table-user-stats .table-user-info h3.table-h3').text(topPlayer.name);
         $('.table-user-stats h3.table-h3').eq(2).text(topPlayer.tier);
         $('.table-user-stats h3.table-h3').eq(3).text(topPlayer.xp.toLocaleString());
-        if (topPlayer.bp === 'Premium') {
-            $('.table-user-stats h3.table-h3').eq(4).text(topPlayer.bp);
-            $('.table-user-stats h3.table-h3').eq(4).attr('id', 'table-premium-pass');
-        } else {
-            $('.table-user-stats h3.table-h3').eq(4).attr('id', 'table-free-pass');
-            $('.table-user-stats h3.table-h3').eq(4).text(topPlayer.bp);
-        }
+        $('.table-user-stats h3.table-h3').eq(4).text(topPlayer.premium === true ? 'Premium' : 'Free');
+        $('.table-user-stats h3.table-h3').eq(4).attr('id', topPlayer.premium === true ? 'table-premium-pass' : 'table-free-pass' );
         $('.table-user-stats h3.table-h3').last().text(topPlayer.taskdone);
     });
 }

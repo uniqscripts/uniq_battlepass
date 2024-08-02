@@ -41,7 +41,7 @@ function GenerateRandomName(index)
     return firstName .. " " .. lastName
 end
 
-local bpOptions = {'Free', 'Premium'}
+local bpOptions = {true, false}
 
 local list = {}
 RegisterNUICallback('OpenScoreboard', function(data, cb)
@@ -54,7 +54,7 @@ RegisterNUICallback('OpenScoreboard', function(data, cb)
             name = GenerateRandomName(i),
             tier = tier,
             xp = xp,
-            bp = bpOptions[math.random(#bpOptions)],
+            premium = bpOptions[math.random(#bpOptions)],
             taskdone = taskdone
         }
     end
