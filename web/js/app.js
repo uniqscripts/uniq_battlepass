@@ -38,20 +38,12 @@ function SetupItems(items, path) {
         if (items.hasOwnProperty(key)) {
             const item = items[key];
 
-            // Create a new div for the reward box wrapper
             const rewardBoxWrapper = document.createElement('div');
             rewardBoxWrapper.className = 'reward-box-wrapper';
 
-            // Create the reward box div
             const rewardBox = document.createElement('div');
             rewardBox.className = 'reward-box';
 
-            // If the item is disabled, add a disabled class to the reward box
-            if (item.disabled) {
-                rewardBox.classList.add('disabled');
-            }
-
-            // Create the overlay div and XP label
             const overlay = document.createElement('div');
             overlay.className = 'overlay';
 
@@ -59,15 +51,12 @@ function SetupItems(items, path) {
             xpLabel.className = 'unlock-tier-btn';
             xpLabel.innerHTML = `Requires ${item.requiredXP} XP`;
 
-            // Append the XP label to the overlay
             overlay.appendChild(xpLabel);
 
-            // Create the img element
             const img = document.createElement('img');
             img.className = 'item-image';
-            img.src = path.replace('%s', item.img ? item.img : key);
+            img.src = path.replace('%s', item.img ? item.img : item.name);
 
-            // Create the h3 element for the item name
             const h3 = document.createElement('h3');
             h3.className = 'item-name';
             h3.textContent = item.label;
@@ -77,16 +66,13 @@ function SetupItems(items, path) {
             h4.className = 'item-count';
             h4.textContent = item.amount + 'x';
 
-            // Append the overlay, image, and name to the reward box
             rewardBox.appendChild(overlay);
             rewardBox.appendChild(img);
             rewardBox.appendChild(h3);
             rewardBox.appendChild(h4);
 
-            // Append the reward box to the wrapper
             rewardBoxWrapper.appendChild(rewardBox);
 
-            // Finally, append the reward box wrapper to the container
             container.appendChild(rewardBoxWrapper);
         }
     }
