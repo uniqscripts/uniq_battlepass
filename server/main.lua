@@ -2,6 +2,7 @@ if not lib then return end
 local Players = {}
 local Query = {}
 local steamAPI = GetConvar('steam_webApiKey', '')
+local week = math.ceil(tonumber(os.date("%d")) / 7)
 
 
 if steamAPI == '' then
@@ -119,7 +120,7 @@ end)
 lib.addCommand(Config.Commands.battlepass.name, {
     help = Config.Commands.battlepass.help,
 }, function(source, args, raw)
-    TriggerClientEvent('uniq_battlepass:client:OpenMenu', source, Players[source])
+    TriggerClientEvent('uniq_battlepass:client:OpenMenu', source, Players[source], week)
 end)
 
 -- shema

@@ -454,7 +454,7 @@ button:hover {
     line-height: normal;
 }
 
-.item-rarity {
+.item-count {
     color: #FFF;
     font-size: 1.75865vh;
     font-style: normal;
@@ -498,7 +498,7 @@ button:hover {
     height: 100%;               
     width: 100%;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
 }
 
@@ -514,6 +514,8 @@ button:hover {
     line-height: normal;
     text-transform: uppercase;
     transition: .1s;
+    margin-top: .5vw;
+    cursor: not-allowed;
 }
 .claim-reward-btn {
     padding: 1vh 1vw;
@@ -541,10 +543,10 @@ button:hover {
     background: rgb(34 75 75 / 43%);
 }
 
-.unlock-tier-btn:hover {
+/* .unlock-tier-btn:hover {
     transform: scale(1.05);
     background: linear-gradient(90deg, rgba(53, 185, 193, 0.90) 0%, rgba(25, 87, 91, 0.90) 100%);
-}
+} */
 
 .free-pass-h2 {
     margin-top: 1.5vh;

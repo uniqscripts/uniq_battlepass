@@ -14,21 +14,35 @@ Config = {
 
     -- where images will be taken from
     ImagePath = 'https://cfx-nui-ox_inventory/web/images/%s.png',
-
+  
     Rewards = {
         free --[[ type of pass ]] = {
+
+            
             [1] = {
-                ['WEAPON_PISTOL' --[[item name]] ] = {
-                    label = 'Pistol',
+                ['money' --[[item name]] ] = {
+                    label = 'Money',
+                    img = '', -- if your image name is something else than item name then put it here otherwise leave it as it is
+                    requiredXP = 100,
+                    amount = 1000 -- how much you will get
+                },
+                ['water'] = {
+                    label = 'Water',
                     img = '',
                     requiredXP = 100,
+                    amount = 10
+                },
+                [1] = {
+                    
                 }
+                
             },
             [2] = { -- 2nd week of month
                 ['WEAPON_PISTOL'] = {
                     label = 'Pistol',
                     img = '',
                     requiredXP = 100,
+                    amount = 10
                 }
             },
             [3] = { -- 3rd week of month
@@ -36,6 +50,7 @@ Config = {
                     label = 'Pistol',
                     img = '',
                     requiredXP = 100,
+                    amount = 10
                 }
             },
             [4] = { -- 4th week of month
@@ -43,6 +58,7 @@ Config = {
                     label = 'Pistol',
                     img = '',
                     requiredXP = 100,
+                    amount = 10
                 }
             },
         },

@@ -8,6 +8,7 @@ $(function() {
             $('.steam-nick').text('Hello ' + event.data.info.name + '!');
             $('.steam-image').attr('src', event.data.info.avatar);
 			$('body').fadeIn();
+            SetupItems(event.data.items, event.data.path);
 		}
 	});
 
@@ -28,17 +29,78 @@ $(function() {
 });
 
 
+function SetupItems(items, path) {
+    const container = document.querySelector('.free-pass-row');
+    container.innerHTML = '';
+
+
+    for (const key in items) {
+        if (items.hasOwnProperty(key)) {
+            const item = items[key];
+
+            // Create a new div for the reward box wrapper
+            const rewardBoxWrapper = document.createElement('div');
+            rewardBoxWrapper.className = 'reward-box-wrapper';
+
+            // Create the reward box div
+            const rewardBox = document.createElement('div');
+            rewardBox.className = 'reward-box';
+
+            // If the item is disabled, add a disabled class to the reward box
+            if (item.disabled) {
+                rewardBox.classList.add('disabled');
+            }
+
+            // Create the overlay div and XP label
+            const overlay = document.createElement('div');
+            overlay.className = 'overlay';
+
+            const xpLabel = document.createElement('div');
+            xpLabel.className = 'unlock-tier-btn';
+            xpLabel.innerHTML = `Requires ${item.requiredXP} XP`;
+
+            // Append the XP label to the overlay
+            overlay.appendChild(xpLabel);
+
+            // Create the img element
+            const img = document.createElement('img');
+            img.className = 'item-image';
+            img.src = path.replace('%s', item.img ? item.img : key);
+
+            // Create the h3 element for the item name
+            const h3 = document.createElement('h3');
+            h3.className = 'item-name';
+            h3.textContent = item.label;
+
+
+            const h4 = document.createElement('h4');
+            h4.className = 'item-count';
+            h4.textContent = item.amount + 'x';
+
+            // Append the overlay, image, and name to the reward box
+            rewardBox.appendChild(overlay);
+            rewardBox.appendChild(img);
+            rewardBox.appendChild(h3);
+            rewardBox.appendChild(h4);
+
+            // Append the reward box to the wrapper
+            rewardBoxWrapper.appendChild(rewardBox);
+
+            // Finally, append the reward box wrapper to the container
+            container.appendChild(rewardBoxWrapper);
+        }
+    }
+}
+
 function OpenScoreboard() {
     $.post(`https://${resource}/OpenScoreboard`, JSON.stringify({}), function(response) {
         const tableWrapper = document.querySelector('.table-wrapper');
 
         tableWrapper.innerHTML = '';
 
-        const data = JSON.parse(response);
+        response.sort((a, b) => b.xp - a.xp);
 
-        data.sort((a, b) => b.xp - a.xp);
-
-        data.forEach((item, index) => {
+        response.forEach((item, index) => {
             const row = document.createElement('div');
             row.className = 'table-row';
 
@@ -83,7 +145,7 @@ function OpenScoreboard() {
             tableWrapper.appendChild(row);
         });
 
-        const topPlayer = data[0];
+        const topPlayer = response[0];
 
         if (topPlayer) {
             $('.table-user-stats h3.table-h3').first().text('#1');
