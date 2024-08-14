@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="../config/config.js"></script>
+    <script src="js/app.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="main">
+        <div class="container">
+            <div class="navigation">
+                <div class="nav-left-side">
+                    <h1 class="battlepass-heading">BATTLEPASS</h1>
+                    <div class="steam-info">
+                        <img class="steam-image" src="img/uniq_logo.png" alt="">
+                        <h2 class="steam-nick">Hello Player!</h2>
+                    </div>
+                </div>
+
+                <div class="nav-centered">
+                    <button id="selected-btn" class="nav-btn">Overview</button>
+                    <button class="nav-btn">Leaderboard</button>
+                    <button class="nav-btn">Battlepass Shop</button>
+                </div>
+
+                <div class="nav-right-side">
+                    <p class="exit-p">Exit from <br> battlepass menu</p>
+                    <button class="exit-btn">ESC</button>
+                </div>
+            </div>
+
+            <div class="container-wrapper container-wrapper-1">
+                <div class="container-left-side">
+                    <div class="tasks-btns-wrapper">
+                        <button id="selected-task-btn" class="task-btn">Daily Tasks</button>
+                        <button  class="task-btn">Weekly Tasks</button>
+                    </div>
+
+                    <div class="task-boxes-inner-wrapper">
+                        <div id="daily-tasks" class="task-boxes-wrapper">
+                            <div id="completed-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div id="completed-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div id="completed-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div id="uncompleted-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0;" id="uncompleted-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        <div id="weekly-tasks" class="task-boxes-wrapper">
+                            
+                            <div id="completed-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div id="uncompleted-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            <div style="margin-bottom: 0;" id="uncompleted-task-box" class="task-box">
+                                <h2 class="task-nr-h2">Task #1</h2>
+                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
+                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                                    sed do eiusmod tempor incididunt ut labore et</p>
+    
+                                <div class="row">
+                                    <div class="task-progress">
+                                        <div class="task-progress-line"></div>
+                                    </div>
+        
+                                    <h4 class="task-list">1 of 1</h4>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+                <div class="container-right-side">
+                    <div class="tier-wrapper">
+                        <div class="row">
+                            <h2 class="tier-level-h2">Tier <span class="tier-level-span">28</span></h2>
+                            <p class="tier-xp">1500/3000px</p>
+                        </div>
+
+                        <div class="tier-line-wrapper">
+                            <div class="tier-line">
+                                <div style="width: 30%;" class="tier-progress-line">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pass">
+                        <div class="left-side-pass">
+                            <div class="free-pass-box-wrapper">
+                                <div class="free-pass-box">
+                                    <svg class="free-pass-icon" xmlns="http://www.w3.org/2000/svg" width="72" height="58" viewBox="0 0 72 58" fill="none">
+                                        <path d="M59.4 50.75H12.6C11.61 50.75 10.8 51.5656 10.8 52.5625V56.1875C10.8 57.1844 11.61 58 12.6 58H59.4C60.39 58 61.2 57.1844 61.2 56.1875V52.5625C61.2 51.5656 60.39 50.75 59.4 50.75ZM66.6 14.5C63.6187 14.5 61.2 16.9355 61.2 19.9375C61.2 20.7418 61.38 21.4895 61.695 22.1805L53.55 27.0969C51.8175 28.1391 49.5787 27.55 48.5775 25.7828L39.4087 9.62891C40.6125 8.63203 41.4 7.13672 41.4 5.4375C41.4 2.43555 38.9813 0 36 0C33.0187 0 30.6 2.43555 30.6 5.4375C30.6 7.13672 31.3875 8.63203 32.5913 9.62891L23.4225 25.7828C22.4212 27.55 20.1712 28.1391 18.45 27.0969L10.3162 22.1805C10.62 21.5008 10.8112 20.7418 10.8112 19.9375C10.8112 16.9355 8.3925 14.5 5.41125 14.5C2.43 14.5 0 16.9355 0 19.9375C0 22.9395 2.41875 25.375 5.4 25.375C5.6925 25.375 5.985 25.3297 6.26625 25.2844L14.4 47.125H57.6L65.7337 25.2844C66.015 25.3297 66.3075 25.375 66.6 25.375C69.5812 25.375 72 22.9395 72 19.9375C72 16.9355 69.5812 14.5 66.6 14.5Z" fill="white" fill-opacity="0.56"/>
+                                    </svg>
+        
+                                    <h2 class="free-pass-h2">FREE <BR> PASS</h2>
+                                </div>
+                            </div>
+                            <div class="premium-pass-box-wrapper">
+                                <div class="premium-pass-box">
+                                    <svg class="premium-pass-icon" xmlns="http://www.w3.org/2000/svg" width="140" height="126" viewBox="0 0 140 126" fill="none">
+                                        <g filter="url(#filter0_d_1_959)">
+                                          <path d="M93.4 84.75H46.6C45.61 84.75 44.8 85.5656 44.8 86.5625V90.1875C44.8 91.1844 45.61 92 46.6 92H93.4C94.39 92 95.2 91.1844 95.2 90.1875V86.5625C95.2 85.5656 94.39 84.75 93.4 84.75ZM100.6 48.5C97.6187 48.5 95.2 50.9355 95.2 53.9375C95.2 54.7418 95.38 55.4895 95.695 56.1805L87.55 61.0969C85.8175 62.1391 83.5787 61.55 82.5775 59.7828L73.4087 43.6289C74.6125 42.632 75.4 41.1367 75.4 39.4375C75.4 36.4355 72.9813 34 70 34C67.0187 34 64.6 36.4355 64.6 39.4375C64.6 41.1367 65.3875 42.632 66.5913 43.6289L57.4225 59.7828C56.4212 61.55 54.1712 62.1391 52.45 61.0969L44.3162 56.1805C44.62 55.5008 44.8112 54.7418 44.8112 53.9375C44.8112 50.9355 42.3925 48.5 39.4112 48.5C36.43 48.5 34 50.9355 34 53.9375C34 56.9395 36.4188 59.375 39.4 59.375C39.6925 59.375 39.985 59.3297 40.2663 59.2844L48.4 81.125H91.6L99.7337 59.2844C100.015 59.3297 100.307 59.375 100.6 59.375C103.581 59.375 106 56.9395 106 53.9375C106 50.9355 103.581 48.5 100.6 48.5Z" fill="#FFD809"/>
+                                        </g>
+                                        <defs>
+                                          <filter id="filter0_d_1_959" x="0.599998" y="0.599998" width="138.8" height="124.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                            <feOffset/>
+                                            <feGaussianBlur stdDeviation="16.7"/>
+                                            <feComposite in2="hardAlpha" operator="out"/>
+                                            <feColorMatrix type="matrix" values="0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.67 0"/>
+                                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_959"/>
+                                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_959" result="shape"/>
+                                          </filter>
+                                        </defs>
+                                    </svg>
+
+
+                                    <svg style="display: none;" class="claimed-icon" id="claimed-icon-svg" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                        <g clip-path="url(#clip0_1_1017)">
+                                          <g filter="url(#filter0_d_1_1017)">
+                                            <path fill-rule="evenodd" clip-rule="evenodd" d="M7.62222 11.0444L5.44444 13.2222L12.4444 20.2222L28 4.66667L25.8222 2.48889L12.4444 15.8667L7.62222 11.0444ZM24.8889 24.8889H3.11111V3.11111H18.6667V0H3.11111C1.4 0 0 1.4 0 3.11111V24.8889C0 26.6 1.4 28 3.11111 28H24.8889C26.6 28 28 26.6 28 24.8889V12.4444H24.8889V24.8889Z" fill="#35B9C1"/>
+                                          </g>
+                                        </g>
+                                        <defs>
+                                          <filter id="filter0_d_1_1017" x="-20.9" y="-20.9" width="69.8" height="69.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                            <feOffset/>
+                                            <feGaussianBlur stdDeviation="10.45"/>
+                                            <feComposite in2="hardAlpha" operator="out"/>
+                                            <feColorMatrix type="matrix" values="0 0 0 0 0.207843 0 0 0 0 0.72549 0 0 0 0 0.756863 0 0 0 0.4 0"/>
+                                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1017"/>
+                                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1017" result="shape"/>
+                                          </filter>
+                                          <clipPath id="clip0_1_1017">
+                                            <rect width="28" height="28" fill="white"/>
+                                          </clipPath>
+                                        </defs>
+                                    </svg>
+
+                                    <h2 class="premium-pass-h2">PREMIUM <br> <span class="premium-pass-span">PASS</span></h2>
+                                    <button class="unlock-premium-pass-btn">UNLOCK NOW</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="right-side-pass">
+                            <div class="free-pass-row">
+                                <div class="reward-box-wrapper">
+                                    <div class="reward-box">
+                                        <img class="item-image" src="img/reward-image.svg" alt="">
+                                        <h3 class="item-name">Pistol</h3>
+                                        <h4 class="item-count">1x</h4>
+
+                                        <svg class="claimed-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                                            <g clip-path="url(#clip0_1_1017)">
+                                              <g filter="url(#filter0_d_1_1017)">
+                                                <path fill-rule="evenodd" clip-rule="evenodd" d="M7.62222 11.0444L5.44444 13.2222L12.4444 20.2222L28 4.66667L25.8222 2.48889L12.4444 15.8667L7.62222 11.0444ZM24.8889 24.8889H3.11111V3.11111H18.6667V0H3.11111C1.4 0 0 1.4 0 3.11111V24.8889C0 26.6 1.4 28 3.11111 28H24.8889C26.6 28 28 26.6 28 24.8889V12.4444H24.8889V24.8889Z" fill="#35B9C1"/>
+                                              </g>
+                                            </g>
+                                            <defs>
+                                              <filter id="filter0_d_1_1017" x="-20.9" y="-20.9" width="69.8" height="69.8" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                                <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                                <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                                <feOffset/>
+                                                <feGaussianBlur stdDeviation="10.45"/>
+                                                <feComposite in2="hardAlpha" operator="out"/>
+                                                <feColorMatrix type="matrix" values="0 0 0 0 0.207843 0 0 0 0 0.72549 0 0 0 0 0.756863 0 0 0 0.4 0"/>
+                                                <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1017"/>
+                                                <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1017" result="shape"/>
+                                              </filter>
+                                              <clipPath id="clip0_1_1017">
+                                                <rect width="28" height="28" fill="white"/>
+                                              </clipPath>
+                                            </defs>
+                                        </svg>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="premium-pass-row">
+                                <div class="reward-box-wrapper">
+                                    <div class="reward-box">
+                                        <div class="overlay-premium">
+                                            <svg class="locked-icon" xmlns="http://www.w3.org/2000/svg" width="106" height="134" viewBox="0 0 106 134" fill="none">
+                                                <g filter="url(#filter0_d_1_1138)">
+                                                  <path d="M77.7626 108.956H28.1406C27.3077 108.956 26.5089 108.626 25.9199 108.037C25.3309 107.448 25 106.649 25 105.816V59.4727C25 58.6397 25.3309 57.8409 25.9199 57.2519C26.5089 56.6629 27.3077 56.332 28.1406 56.332H77.7626C78.5955 56.332 79.3944 56.6629 79.9834 57.2519C80.5723 57.8409 80.9032 58.6397 80.9032 59.4727V105.816C80.9032 106.649 80.5723 107.448 79.9834 108.037C79.3944 108.626 78.5955 108.956 77.7626 108.956ZM31.2813 102.675H74.622V62.6133H31.2813V102.675Z" fill="#2E9BA2"/>
+                                                  <path d="M71.829 62.6132H34.0891C33.2562 62.6132 32.4573 62.2823 31.8684 61.6933C31.2794 61.1043 30.9485 60.3055 30.9485 59.4725V46.797C31.0051 40.9966 33.3489 35.453 37.4706 31.3713C41.5922 27.2897 47.1584 25 52.9591 25C58.7597 25 64.3259 27.2897 68.4476 31.3713C72.5692 35.453 74.9131 40.9966 74.9697 46.797V59.4725C74.9697 60.3055 74.6388 61.1043 74.0498 61.6933C73.4608 62.2823 72.662 62.6132 71.829 62.6132ZM37.2297 56.3319H68.6884V46.797C68.6406 42.6567 66.9624 38.7023 64.0178 35.7914C61.0732 32.8806 57.0996 31.2481 52.9591 31.2481C48.8186 31.2481 44.845 32.8806 41.9004 35.7914C38.9557 38.7023 37.2775 42.6567 37.2297 46.797V56.3319Z" fill="#2E9BA2"/>
+                                                  <path d="M52.9601 88.5779C51.0345 88.5779 49.1521 88.0069 47.5511 86.9371C45.95 85.8673 44.7021 84.3467 43.9652 82.5677C43.2283 80.7887 43.0355 78.8311 43.4112 76.9425C43.7869 75.0539 44.7141 73.3192 46.0757 71.9576C47.4373 70.596 49.1721 69.6687 51.0607 69.293C52.9493 68.9174 54.9069 69.1102 56.6859 69.8471C58.4649 70.584 59.9854 71.8318 61.0552 73.4329C62.125 75.034 62.696 76.9163 62.696 78.8419C62.6933 81.4232 61.6666 83.898 59.8414 85.7232C58.0161 87.5485 55.5414 88.5751 52.9601 88.5779ZM52.9601 75.3872C52.2768 75.3872 51.6089 75.5898 51.0408 75.9694C50.4726 76.3491 50.0298 76.8886 49.7684 77.5199C49.5069 78.1511 49.4385 78.8457 49.5718 79.5159C49.7051 80.186 50.0341 80.8016 50.5172 81.2848C51.0004 81.7679 51.616 82.0969 52.2861 82.2302C52.9563 82.3635 53.6509 82.2951 54.2821 82.0336C54.9134 81.7722 55.4529 81.3294 55.8326 80.7612C56.2122 80.1931 56.4148 79.5252 56.4148 78.8419C56.4137 77.926 56.0493 77.0479 55.4017 76.4003C54.7541 75.7527 53.876 75.3883 52.9601 75.3872Z" fill="#2E9BA2"/>
+                                                  <path d="M52.96 96.1845C52.127 96.1845 51.3282 95.8536 50.7392 95.2646C50.1502 94.6756 49.8193 93.8768 49.8193 93.0439V85.4373C49.8193 84.6043 50.1502 83.8055 50.7392 83.2165C51.3282 82.6275 52.127 82.2966 52.96 82.2966C53.7929 82.2966 54.5917 82.6275 55.1807 83.2165C55.7697 83.8055 56.1006 84.6043 56.1006 85.4373V93.0439C56.1006 93.8768 55.7697 94.6756 55.1807 95.2646C54.5917 95.8536 53.7929 96.1845 52.96 96.1845Z" fill="#2E9BA2"/>
+                                                </g>
+                                                <defs>
+                                                  <filter id="filter0_d_1_1138" x="0" y="0" width="105.903" height="133.957" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+                                                    <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+                                                    <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+                                                    <feOffset/>
+                                                    <feGaussianBlur stdDeviation="12.5"/>
+                                                    <feComposite in2="hardAlpha" operator="out"/>
+                                                    <feColorMatrix type="matrix" values="0 0 0 0 0.207843 0 0 0 0 0.72549 0 0 0 0 0.756863 0 0 0 0.8 0"/>
+                                                    <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1138"/>
+                                                    <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1138" result="shape"/>
+                                                  </filter>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <img class="item-image" src="img/reward-image.svg" alt="">
+                                        <h3 class="item-name">Pistol</h3>
+                                        <h4 class="item-count">1x</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                           
+                    </div>
+                </div>
+            </div>
+
+            <div class="container-wrapper container-wrapper-2">
+                <div class="table-heading">
+                    <h2 class="table-h2">Rank</h2>
+                    <h2 class="table-h2">Player</h2>
+                    <h2 class="table-h2">Tier</h2>
+                    <h2 class="table-h2">XP</h2>
+                    <h2 class="table-h2">Battlepass Type</h2>
+                    <h2 class="table-h2">Tasks Completed</h2>
+                </div>
+                <div class="table-wrapper">
+                   
+                </div>
+                <div class="table-user-stats" >
+                    <h3 class="table-h3">#1</h3>
+                    <div class="table-user-info">
+                        <img class="table-steam-img" src="img/uniq_logo.png" alt="">
+                        <h3 class="table-h3">Top Player</h3>
+                    </div>
+                    <h3 class="table-h3">0</h3>
+                    <h3 class="table-h3">0</h3>
+                    <h3 id="table-premium-pass" class="table-h3">Premium</h3>
+                    <h3 class="table-h3">0</h3>
+                </div>
+            </div>
+
+            <div class="container-wrapper container-wrapper-3">
+                <div class="coins-left-side">
+                    <h1 class="coins-title">COINS SHOP</h1>
+                    <p class="coins-info">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
+                        ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
+                        ex ea commodo consequat. Duis aute irure dolor in reprehenderit in 
+                        voluptate velit esse cillum dolore eu fugiat nulla pari
+                    </p>
+                    <div style="margin-top: 9vh;" class="tier-wrapper">
+                        <div class="row">
+                            <h2 class="tier-level-h2">Tier <span class="tier-level-span">28</span></h2>
+                            <p class="tier-xp">1500/3000px</p>
+                        </div>
+
+                        <div class="tier-line-wrapper">
+                            <div class="tier-line">
+                                <div style="width: 30%;" class="tier-progress-line">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coins-amount-wrapper">
+                        <svg class="coins-icon" xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38" fill="none">
+                            <path d="M0 30.0809V33.25C0 35.8662 6.31602 38 14.25 38C22.0504 38 28.5 35.8662 28.5 33.25V30.0771C25.4422 32.2406 19.8312 33.25 14.25 33.25C8.66875 33.25 3.06152 32.2406 0 30.0809ZM23.75 9.5C31.5504 9.5 38 7.36621 38 4.75C38 2.13379 31.6172 0 23.75 0C15.816 0 9.5 2.13379 9.5 4.75C9.5 7.36621 15.816 9.5 23.75 9.5ZM0 22.2953V26.125C0 28.7412 6.31602 30.875 14.25 30.875C22.0504 30.875 28.5 28.7412 28.5 26.125V22.2953C25.4422 24.8188 19.8238 26.125 14.25 26.125C8.67617 26.125 3.06152 24.8188 0 22.2953ZM30.875 23.1117C35.1277 22.2805 38 20.7664 38 19V15.8234C36.2744 17.048 33.751 17.8741 30.875 18.384V23.1117ZM14.25 11.875C6.31602 11.875 0 14.532 0 17.8125C0 21.093 6.31602 23.75 14.25 23.75C22.0504 23.75 28.5 21.0967 28.5 17.8125C28.5 14.5283 22.0504 11.875 14.25 11.875ZM30.5188 16.0461C34.9793 15.252 38 13.6711 38 11.875V8.69844C35.3652 10.5636 30.8379 11.5655 26.0656 11.8067C28.2625 12.8695 29.873 14.2945 30.5188 16.0461Z" fill="#35B9C1"/>
+                        </svg>
+                        <h2 class="coins-amount-h2">Coins: <span class="coins-amount-span">28</span></h2>
+                    </div>
+
+                    <button class="more-coins-btn" onclick=OpenStore()>
+                        <svg class="purchase-coins-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
+                            <path d="M0 22.1648V24.5C0 26.4277 4.65391 28 10.5 28C16.2477 28 21 26.4277 21 24.5V22.1621C18.7469 23.7562 14.6125 24.5 10.5 24.5C6.3875 24.5 2.25586 23.7562 0 22.1648ZM17.5 7C23.2477 7 28 5.42773 28 3.5C28 1.57227 23.2969 0 17.5 0C11.6539 0 7 1.57227 7 3.5C7 5.42773 11.6539 7 17.5 7ZM0 16.4281V19.25C0 21.1777 4.65391 22.75 10.5 22.75C16.2477 22.75 21 21.1777 21 19.25V16.4281C18.7469 18.2875 14.607 19.25 10.5 19.25C6.39297 19.25 2.25586 18.2875 0 16.4281ZM22.75 17.0297C25.8836 16.4172 28 15.3016 28 14V11.6594C26.7285 12.5617 24.8691 13.1704 22.75 13.5461V17.0297ZM10.5 8.75C4.65391 8.75 0 10.7078 0 13.125C0 15.5422 4.65391 17.5 10.5 17.5C16.2477 17.5 21 15.5449 21 13.125C21 10.7051 16.2477 8.75 10.5 8.75ZM22.4875 11.8234C25.7742 11.2383 28 10.0734 28 8.75V6.40938C26.0586 7.78367 22.7227 8.52195 19.2063 8.69969C20.825 9.48281 22.0117 10.5328 22.4875 11.8234Z" fill="white"/>
+                        </svg>
+                          Purchase more coins <br>
+                          <span class="note">Please note that it can take a few minutes for the purchase to be authorized</span>
+                    </button>
+                    <div class="redeem-wrapper">
+                        <h2 class="redeem-coins-h2">Redeem Coins</h2>
+                        <div class="redeem-row">
+                            <input class="redeem-input" placeholder="tbx-xxxxxxxxxxxxxx-xxxxxx" type="text">
+                            <button class="redeem-btn">Redeem</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="coins-right-side">
+                    <div class="coins-box">
+                        <h2 class="coins-item-name">Pistol</h2>
+                        <p class="coins-item-amount">1x</p>
+                        <img class="coins-item-image" src="img/reward-image.svg" alt="">
+                        <div class="coins-buy-wrapper">
+                            <div class="coins-price-wrapper">
+                                <svg class="coins-price-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18" fill="none">
+                                    <path d="M0 14.2488V15.75C0 16.9893 2.9918 18 6.75 18C10.4449 18 13.5 16.9893 13.5 15.75V14.2471C12.0516 15.2719 9.39375 15.75 6.75 15.75C4.10625 15.75 1.4502 15.2719 0 14.2488ZM11.25 4.5C14.9449 4.5 18 3.48926 18 2.25C18 1.01074 14.9766 0 11.25 0C7.4918 0 4.5 1.01074 4.5 2.25C4.5 3.48926 7.4918 4.5 11.25 4.5ZM0 10.5609V12.375C0 13.6143 2.9918 14.625 6.75 14.625C10.4449 14.625 13.5 13.6143 13.5 12.375V10.5609C12.0516 11.7563 9.39023 12.375 6.75 12.375C4.10977 12.375 1.4502 11.7563 0 10.5609ZM14.625 10.9477C16.6395 10.5539 18 9.83672 18 9V7.49531C17.1826 8.07539 15.9873 8.46668 14.625 8.7082V10.9477ZM6.75 5.625C2.9918 5.625 0 6.88359 0 8.4375C0 9.99141 2.9918 11.25 6.75 11.25C10.4449 11.25 13.5 9.99316 13.5 8.4375C13.5 6.88184 10.4449 5.625 6.75 5.625ZM14.4563 7.60078C16.5691 7.22461 18 6.47578 18 5.625V4.12031C16.752 5.00379 14.6074 5.4784 12.3469 5.59266C13.3875 6.09609 14.1504 6.77109 14.4563 7.60078Z" fill="#35B9C1"/>
+                                </svg>
+                                <h3 class="coins-price-h3">25</h3>
+                            </div>
+
+                            <button class="coins-purchase">PURCHASE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="notification-container"></div>
+    </div>
+</body>
+<script>
+    const buttons = document.querySelectorAll('.nav-btn');
+    const containers = document.querySelectorAll('.container-wrapper');
+
+    buttons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const selectedButton = document.getElementById('selected-btn');
+
+            if (button === selectedButton) {
+                return;
+            }   
+
+            if (selectedButton) {
+                selectedButton.removeAttribute('id');
+            }
+
+            button.id = 'selected-btn';
+
+            containers.forEach(container => {
+                container.style.display = 'none';
+            });
+
+            const selectedContainer = containers[index];
+            selectedContainer.style.display = 'grid';
+
+
+            if (selectedContainer.classList.contains('container-wrapper-2')) {
+                OpenScoreboard();
+            } else if (selectedContainer.classList.contains('container-wrapper-3')) {
+                OpenBattleShop();
+            }
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dailyTasksBtn = document.getElementById('selected-task-btn');
+        const weeklyTasksBtn = document.querySelector('.task-btn:nth-child(2)');
+        const dailyTasksContainer = document.getElementById('daily-tasks');
+        const weeklyTasksContainer = document.getElementById('weekly-tasks');
+
+        dailyTasksBtn.addEventListener('click', function() {
+            dailyTasksBtn.classList.add('selected');
+            dailyTasksBtn.id = 'selected-task-btn';
+            weeklyTasksBtn.classList.remove('selected');
+            weeklyTasksBtn.removeAttribute('id'); 
+            
+            dailyTasksContainer.style.display = 'block';
+            weeklyTasksContainer.style.display = 'none';
+        });
+
+        weeklyTasksBtn.addEventListener('click', function() {
+            dailyTasksBtn.classList.remove('selected');
+            dailyTasksBtn.removeAttribute('id'); 
+            weeklyTasksBtn.classList.add('selected');
+            weeklyTasksBtn.id = 'selected-task-btn'; 
+            
+            dailyTasksContainer.style.display = 'none';
+            weeklyTasksContainer.style.display = 'block';
+        });
+    });
+</script>
+
+</html>
