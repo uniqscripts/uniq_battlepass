@@ -105,6 +105,20 @@ MySQL.ready(function()
         end
     end
 
+    local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass_codes`')
+
+    if not success then
+        MySQL.query([[
+            CREATE TABLE `uniq_battlepass_codes` (
+                `identifier` varchar(46) DEFAULT NULL,
+                `code` varchar(100) DEFAULT NULL,
+                `amount` int(11) DEFAULT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+        ]])
+
+        print('^2Successfully added uniq_battlepass_codes table to SQL^0')
+    end
+
     local players = GetActivePlayers()
 
     for i = 1, #players do
@@ -230,7 +244,7 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
         if Config.Rewards.FreePass[week][data.itemId] then
             local item = Config.Rewards.FreePass[week][data.itemId]
 
-            if Players[source].battlepass.xp >= item.needXP then
+            if Players[source].battlepass.xp >= item.needXP and not Players[source].battlepass.FreeClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.FreeClaims[data.itemId] = true
 
@@ -243,7 +257,7 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
         if Config.Rewards.PremiumPass[week][data.itemId] then
             local item = Config.Rewards.PremiumPass[week][data.itemId]
 
-            if Players[source].battlepass.xp >= item.needXP then
+            if Players[source].battlepass.xp >= item.needXP and not Players[source].battlepass.PremiumClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.PremiumClaims[data.itemId] = true
 

@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (event) => {
         const actions = {
-            '.unlock-tier-btn': () => setTimeout(ClaimItem(event), 200),
+            '.unlock-tier-btn': ClaimItem,
             '.coins-purchase': HandlePurchase,
             '.redeem-btn': RedeemCode,
             '.unlock-premium-pass-btn': PurchasePremium,
