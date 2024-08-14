@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.addEventListener('click', (event) => {
         const actions = {
-            '.unlock-tier-btn': ClaimItem,
+            '.unlock-tier-btn': () => setTimeout(ClaimItem(event), 200),
             '.coins-purchase': HandlePurchase,
             '.redeem-btn': RedeemCode,
             '.unlock-premium-pass-btn': PurchasePremium,
@@ -159,26 +159,24 @@ function ClaimItem(event) {
     const button = event.target;
     button.disabled = true;
 
-    setTimeout(() => {
-        NUICallBack('claimReward', {
-            itemId: button.dataset.itemId,
-            pass: button.dataset.passtype
-        }).then((cb) => {
-            if (cb.resp === true) {
-                Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
+    NUICallBack('claimReward', {
+        itemId: button.dataset.itemId,
+        pass: button.dataset.passtype
+    }).then((cb) => {
+        if (cb.resp === true) {
+            Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
 
-                const btn = button.closest('.reward-box')
+            const btn = button.closest('.reward-box')
 
-                if (!btn) {
-                    return;
-                }
-
-                btn.querySelector('#claimed-icon-svg').style.display = 'block';
-                btn.closest('.overlay').remove();
-                button.remove();
+            if (!btn) {
+                return;
             }
-        });
-    }, 150);
+
+            btn.querySelector('#claimed-icon-svg').style.display = 'block';
+            button.closest('.overlay').remove();
+            button.remove();
+        }
+    });
 }
 
 function HandlePurchase(event) {
