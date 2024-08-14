@@ -32,12 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
             '.unlock-premium-pass-btn': PurchasePremium,
         };
     
-        for (const selector in actions) {
+        Object.keys(actions).some((selector) => {
             if (event.target.matches(selector)) {
                 actions[selector](event);
-                break;
+                return;
             }
-        }
+        });
     });
 
     document.addEventListener('keyup', (event) => {
