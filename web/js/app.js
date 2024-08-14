@@ -159,22 +159,26 @@ function ClaimItem(event) {
     const button = event.target;
     button.disabled = true;
 
-    NUICallBack('claimReward', {
-        itemId: button.dataset.itemId,
-        pass: button.dataset.passtype
-    }).then((cb) => {
-        if (cb.resp === true) {
-            Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
+    setTimeout(() => {
+        NUICallBack('claimReward', {
+            itemId: button.dataset.itemId,
+            pass: button.dataset.passtype
+        }).then((cb) => {
+            if (cb.resp === true) {
+                Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
 
-            const btn = button.closest('.reward-box')
+                const btn = button.closest('.reward-box')
 
-            if (!btn) { return }
+                if (!btn) {
+                    return;
+                }
 
-            btn.querySelector('#claimed-icon-svg').style.display = 'block';
-            button.closest('.overlay').remove();
-            button.remove();
-        }
-    });
+                btn.querySelector('#claimed-icon-svg').style.display = 'block';
+                btn.closest('.overlay').remove();
+                button.remove();
+            }
+        });
+    }, 150);
 }
 
 function HandlePurchase(event) {
