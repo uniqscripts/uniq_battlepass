@@ -166,7 +166,11 @@ function ClaimItem(event) {
         if (cb.resp === true) {
             Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
 
-            button.closest('.reward-box').querySelector('#claimed-icon-svg').style.display = 'block';
+            const btn = button.closest('.reward-box')
+
+            if (!btn) { return }
+
+            btn.querySelector('#claimed-icon-svg').style.display = 'block';
             button.closest('.overlay').remove();
             button.remove();
         }
