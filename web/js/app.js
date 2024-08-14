@@ -198,7 +198,7 @@ function HandlePurchase(event) {
 
     setTimeout(() => {
         button.disabled = false;
-    }, 3000);
+    }, 500);
 }
 
 function LoadAvatar() {
