@@ -132,7 +132,15 @@ AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
     end
 end)
 
--- qb dodat loaded
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+    if Player then
+        local query = MySQL.query.await(Query.select, { Player.PlayerData.citizenid })
+
+        if query[1] then
+            CreatePlayer(Player.PlayerData.source, json.decode(query[1].battlepass))
+        end
+    end
+end)
 
 AddEventHandler("esx:playerLogout", function(playerId)
     if Players[playerId] then
@@ -141,7 +149,12 @@ AddEventHandler("esx:playerLogout", function(playerId)
     end
 end)
 
--- qb dodat drop
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
+    if Players[playerId] then
+        MySQL.update(Query.update, { json.encode(Players[playerId].battlepass, { sort_keys = true }), Players[playerId].identifier })
+        Players[playerId] = nil
+    end
+end)
 
 -- shema
 lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(source)
