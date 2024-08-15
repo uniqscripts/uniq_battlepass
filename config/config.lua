@@ -36,6 +36,9 @@ return {
         },
     },
 
+    -- how much each level has xp
+    XPPerLevel = 1000,
+
     Rewards = {
         FreePass --[[ type of pass ]] = {
             /*
@@ -48,45 +51,44 @@ return {
                 },
             */
             [1] = { -- 1st week of month
-                { name = 'water', label = 'Water', img = '', needXP = 50, amount = 1 },
-                { name = 'money', label = 'Money', img = '', needXP = 100, amount = 1 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', needXP = 150, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 200, amount = 200 },
+                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
+                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
             [2] = { -- 2nd week of month
-                { name = 'water', label = 'Water', img = '', needXP = 50, amount = 1 },
-                { name = 'money', label = 'Money', img = '', needXP = 100, amount = 1 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', needXP = 150, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 200, amount = 200 },
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', needXP = 200, amount = 1 },
+                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
+                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
             [3] = { -- 3rd week of month
-                { name = 'water', label = 'Water', img = '', needXP = 50, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 100, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', needXP = 150, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 200, amount = 200 },
+                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
+                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 10, xp = 150 }, amount = 200 },
             },
             [4] = { -- 4th week of month
-                { name = 'water', label = 'Water', img = '', needXP = 50, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 100, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', needXP = 150, amount = 10 },
-                { name = 'money', label = 'Money', img = '', needXP = 200, amount = 200 },
+                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
+                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
+                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
         },
 
         -- type of pass
         PremiumPass = {
             [1] = { -- 1st week of month
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', needXP = 500, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
             [2] = { -- 2nd week of month
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', needXP = 500, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
             [3] = { -- 3rd week of month
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', needXP = 500, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
             [4] = { -- 4th week of month
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', needXP = 500, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
         }
     },

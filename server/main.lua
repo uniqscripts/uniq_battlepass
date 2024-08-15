@@ -41,7 +41,7 @@ local function CreatePlayer(playerId, bp)
     local self = {
         id = playerId,
         name = GetPlayerName(playerId),
-        battlepass = table.type(bp) == 'empty' and { coins = 0, xp = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 } or bp,
+        battlepass = table.type(bp) == 'empty' and { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 } or bp,
         identifier = GetIdentifier(playerId),
         avatar = GetAvatar(playerId),
     }
@@ -53,6 +53,11 @@ local function AddXP(playerId, xp)
     xp = tonumber(xp)
     if Players[playerId] then
         Players[playerId].battlepass.xp += xp
+
+        while Players[playerId].battlepass.xp >= Config.XPPerLevel do
+            Players[playerId].battlepass.xp -= Config.XPPerLevel
+            Players[playerId].battlepass.tier += 1
+        end
     end
 end
 
@@ -63,6 +68,7 @@ local function RemoveXP(playerId, xp)
 
         if 0 > Players[playerId].battlepass.xp then
             Players[playerId].battlepass.xp = 0
+            Players[playerId].battlepass.tier -= 1
         end
     end
 end
@@ -244,7 +250,8 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
         if Config.Rewards.FreePass[week][data.itemId] then
             local item = Config.Rewards.FreePass[week][data.itemId]
 
-            if Players[source].battlepass.xp >= item.needXP and not Players[source].battlepass.FreeClaims[data.itemId] then
+            if (Players[source].battlepass.xp >= item.requirements.xp and Players[source].battlepass.tier >= item.requirements.tier)
+            and not Players[source].battlepass.FreeClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.FreeClaims[data.itemId] = true
 
@@ -257,7 +264,8 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
         if Config.Rewards.PremiumPass[week][data.itemId] then
             local item = Config.Rewards.PremiumPass[week][data.itemId]
 
-            if Players[source].battlepass.xp >= item.needXP and not Players[source].battlepass.PremiumClaims[data.itemId] then
+            if (Players[source].battlepass.xp >= item.requirements.xp and Players[source].battlepass.tier >= item.requirements.tier)
+            and not Players[source].battlepass.PremiumClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.PremiumClaims[data.itemId] = true
 
@@ -415,7 +423,7 @@ lib.addCommand(Config.Commands.wipe.name, {
     restricted = Config.Commands.wipe.restricted
 }, function(source, args, raw)
     if Players[args.target] then
-        Players[args.target].battlepass = { coins = 0, xp = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
+        Players[args.target].battlepass = { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
 
         TriggerClientEvent('uniq_battlepass:Notify', args.target, 'Your battlepass progress is wiped by admin', 'warning')
     end
@@ -438,11 +446,8 @@ lib.addCommand(Config.Commands.givexp.name, {
     },
     restricted = Config.Commands.givexp.restricted
 }, function(source, args, raw)
-    if Players[args.target] then
-        Players[args.target].battlepass.xp += args.count
-
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, ('You got %s xp by admin'):format(args.count), 'inform')
-    end
+    AddXP(args.target, args.count)
+    TriggerClientEvent('uniq_battlepass:Notify', args.target, ('You got %s xp by admin'):format(args.count), 'inform')
 end)
 
 -- resetane stats prvog

@@ -2,6 +2,7 @@ if not lib then return end
 local FreeItems = lib.load('config.config').Rewards.FreePass
 local PaidItems = lib.load('config.config').Rewards.PremiumPass
 local BattleShop = lib.load('config.config').BattleShop
+local XPPerLevel = lib.load('config.config').XPPerLevel
 local UI = false
 
 
@@ -21,10 +22,9 @@ RegisterNetEvent('uniq_battlepass:client:OpenMenu', function(data, week)
     if not UI then
         UI = true
         SetNuiFocus(true, true)
-	    SendNUIMessage({enable = true, PlayerData = data, FreeItems = FreeItems[week], PaidItems = PaidItems[week] })
+	    SendNUIMessage({enable = true, PlayerData = data, FreeItems = FreeItems[week], PaidItems = PaidItems[week], XPPerLevel = XPPerLevel })
     end
 end)
-
 
 RegisterNUICallback('quit', function(data, cb)
 	SetNuiFocus(false, false)

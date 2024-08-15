@@ -1,14 +1,17 @@
 const resource = GetParentResourceName();
 let PlayerData = {};
+let XPPerLevel = 0;
 
 document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('message', ({ data }) => {
         if (data.enable) {
             PlayerData = data.PlayerData;
+            XPPerLevel = data.XPPerLevel;
 
             LoadAvatar();
             CreateFreePass(data.FreeItems);
             CreatePremiumPass(data.PaidItems);
+            CalculateTeir()
             document.body.style.display = 'block';
 
             if (PlayerData.battlepass.premium === true) {
@@ -47,6 +50,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+function CalculateTeir() {
+    let progress = Math.floor(PlayerData.battlepass.xp / XPPerLevel * 100)
+
+
+    document.querySelector('.tier-xp').textContent = `${PlayerData.battlepass.xp}/${XPPerLevel}px`;
+    document.querySelector('.tier-level-span').textContent = PlayerData.battlepass.tier;
+    document.querySelector('.tier-progress-line').style.width = progress + '%';
+}
+
 function Exit() {
     PlayerData = {};
     document.querySelector('.table-wrapper').innerHTML = '';
@@ -62,7 +74,7 @@ function CreateFreePass(items) {
     const fragment = document.createDocumentFragment();
 
     Object.entries(items).forEach(([key, item]) => {
-        const rewardBox = createRewardBox(item, key, PlayerData.battlepass.xp, 'free');
+        const rewardBox = createRewardBox(item, key, PlayerData.battlepass.xp, PlayerData.battlepass.tier, 'free');
         fragment.appendChild(rewardBox);
     });
 
@@ -76,14 +88,14 @@ function CreatePremiumPass(items) {
     const fragment = document.createDocumentFragment();
 
     Object.entries(items).forEach(([key, item]) => {
-        const rewardBox = createRewardBox(item, key, PlayerData.battlepass.xp, 'premium');
+        const rewardBox = createRewardBox(item, key, PlayerData.battlepass.xp, PlayerData.battlepass.tier, 'premium');
         fragment.appendChild(rewardBox);
     });
 
     container.appendChild(fragment);
 }
 
-function createRewardBox(item, key, currentXP, type) {
+function createRewardBox(item, key, currentXP, currentTier, type) {
     const rewardBoxWrapper = document.createElement('div');
     rewardBoxWrapper.className = 'reward-box-wrapper';
 
@@ -94,16 +106,18 @@ function createRewardBox(item, key, currentXP, type) {
     overlay.className = type === 'free' ? 'overlay' : 'overlay-premium';
 
     let xpLabel;
-    const isClaimable = currentXP >= item.needXP;
     const hasClaimed = type === 'free' ? PlayerData.battlepass.FreeClaims[key] : PlayerData.battlepass.PremiumClaims[key];
+
+    const isTierMet = currentTier >= item.requirements.tier;
+    const isXPMet = currentXP >= item.requirements.xp;
+    const isClaimable = isTierMet && (isXPMet || currentTier > item.requirements.tier);
 
     if (PlayerData.battlepass.premium === false && type === 'premium') {
         overlay.appendChild(lockSVG());
     } else if (!hasClaimed) {
-        
         xpLabel = document.createElement('div');
         xpLabel.className = 'unlock-tier-btn';
-        overlay.className = 'overlay'
+        overlay.className = 'overlay';
 
         if (isClaimable) {
             xpLabel.textContent = Config.UI.claimButtonText;
@@ -112,7 +126,7 @@ function createRewardBox(item, key, currentXP, type) {
             xpLabel.dataset.passtype = type;
             overlay.classList.add('unclaimed-reward-overlay');
         } else {
-            xpLabel.textContent = Config.UI.requiresXPText.replace('%d', item.needXP);
+            xpLabel.textContent = `Tier: ${item.requirements.tier} | XP: ${item.requirements.xp}`;
             xpLabel.classList.add('disabled');
         }
 
@@ -138,7 +152,6 @@ function createRewardBox(item, key, currentXP, type) {
 
     return rewardBoxWrapper;
 }
-
 
 
 function createImageElement(src) {
