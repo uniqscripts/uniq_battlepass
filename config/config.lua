@@ -4,7 +4,7 @@ return {
     -- image if steam image is not loaded
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
-    -- when are stats restarted, currently At 00:00 on day-of-month 1
+    -- When to restart stats, currently At 00:00 on day-of-month 1
     Cron = '0 0 1 * *',
 
 
@@ -109,7 +109,18 @@ return {
     },
 
     BattleShop = {
-        { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+        [1] = { -- week of month
+            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+        },
+        [2] = { -- week of month
+            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+        },
+        [3] = { -- week of month
+            { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', coins = 50, amount = 10 },
+        },
+        [4] = { -- week of month
+            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+        },
     },
 
     /*

@@ -157,10 +157,10 @@ end)
 
 lib.callback.register('uniq_battlepass:GetCoins', function(source)
     if Players[source] then
-        return Players[source].battlepass.coins
+        return Players[source].battlepass.coins, week
     end
 
-    return 0
+    return 0, week
 end)
 
 

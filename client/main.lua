@@ -48,9 +48,9 @@ end)
 
 
 RegisterNUICallback('OpenBattleShop', function(data, cb)
-    local coins = lib.callback.await('uniq_battlepass:GetCoins', 100)
+    local coins, week = lib.callback.await('uniq_battlepass:GetCoins', 100)
 
-    cb({ BattleShop = BattleShop, coins = coins })
+    cb({ BattleShop = BattleShop[week], coins = coins })
 end)
 
 

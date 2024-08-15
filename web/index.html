@@ -37,8 +37,8 @@
             <div class="container-wrapper container-wrapper-1">
                 <div class="container-left-side">
                     <div class="tasks-btns-wrapper">
-                        <button id="selected-task-btn" class="task-btn">Daily Tasks</button>
-                        <button  class="task-btn">Weekly Tasks</button>
+                        <span id="selected-task-btn" class="task-btn">Tasks</span>
+                    
                     </div>
 
                     <div class="task-boxes-inner-wrapper">
@@ -57,109 +57,6 @@
                                     <h4 class="task-list">1 of 1</h4>
                                 </div>
                             </div>
-                            <div id="completed-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            <div id="completed-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            <div id="uncompleted-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 0;" id="uncompleted-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            
-                        </div>
-                        <div id="weekly-tasks" class="task-boxes-wrapper">
-                            
-                            <div id="completed-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-completed" class="task-status">COMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            <div id="uncompleted-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            <div style="margin-bottom: 0;" id="uncompleted-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <h3 id="task-uncompleted" class="task-status">UNCOMPLETED</h3>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-                                    sed do eiusmod tempor incididunt ut labore et</p>
-    
-                                <div class="row">
-                                    <div class="task-progress">
-                                        <div class="task-progress-line"></div>
-                                    </div>
-        
-                                    <h4 class="task-list">1 of 1</h4>
-                                </div>
-                            </div>
-                            
                         </div>
                     </div>
                 </div>
@@ -384,7 +281,7 @@
                 </div>
 
                 <div class="coins-right-side">
-                    <div class="coins-box">
+                    <!-- <div class="coins-box">
                         <h2 class="coins-item-name">Pistol</h2>
                         <p class="coins-item-amount">1x</p>
                         <img class="coins-item-image" src="img/reward-image.svg" alt="">
@@ -398,7 +295,7 @@
 
                             <button class="coins-purchase">PURCHASE</button>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -445,28 +342,13 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const dailyTasksBtn = document.getElementById('selected-task-btn');
-        const weeklyTasksBtn = document.querySelector('.task-btn:nth-child(2)');
         const dailyTasksContainer = document.getElementById('daily-tasks');
         const weeklyTasksContainer = document.getElementById('weekly-tasks');
 
         dailyTasksBtn.addEventListener('click', function() {
             dailyTasksBtn.classList.add('selected');
             dailyTasksBtn.id = 'selected-task-btn';
-            weeklyTasksBtn.classList.remove('selected');
-            weeklyTasksBtn.removeAttribute('id'); 
-            
             dailyTasksContainer.style.display = 'block';
-            weeklyTasksContainer.style.display = 'none';
-        });
-
-        weeklyTasksBtn.addEventListener('click', function() {
-            dailyTasksBtn.classList.remove('selected');
-            dailyTasksBtn.removeAttribute('id'); 
-            weeklyTasksBtn.classList.add('selected');
-            weeklyTasksBtn.id = 'selected-task-btn'; 
-            
-            dailyTasksContainer.style.display = 'none';
-            weeklyTasksContainer.style.display = 'block';
         });
     });
 </script>
