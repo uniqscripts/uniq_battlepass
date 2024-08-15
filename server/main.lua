@@ -210,9 +210,15 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
 
         if Config.Rewards.FreePass[week][data.itemId] then
             local item = Config.Rewards.FreePass[week][data.itemId]
+            local currentXP = Players[source].battlepass.xp
+            local currentTier = Players[source].battlepass.tier
+            local requiredXP = item.requirements.xp
+            local requiredTier = item.requirements.tier
+            local isTierMet = currentTier >= requiredTier
+            local isXPMet = currentXP >= requiredXP
+            local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if (Players[source].battlepass.xp >= item.requirements.xp and Players[source].battlepass.tier >= item.requirements.tier)
-            and not Players[source].battlepass.FreeClaims[data.itemId] then
+            if isClaimable and not Players[source].battlepass.FreeClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.FreeClaims[data.itemId] = true
 
@@ -224,9 +230,15 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
 
         if Config.Rewards.PremiumPass[week][data.itemId] then
             local item = Config.Rewards.PremiumPass[week][data.itemId]
+            local currentXP = Players[source].battlepass.xp
+            local currentTier = Players[source].battlepass.tier
+            local requiredXP = item.requirements.xp
+            local requiredTier = item.requirements.tier
+            local isTierMet = currentTier >= requiredTier
+            local isXPMet = currentXP >= requiredXP
+            local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if (Players[source].battlepass.xp >= item.requirements.xp and Players[source].battlepass.tier >= item.requirements.tier)
-            and not Players[source].battlepass.PremiumClaims[data.itemId] then
+            if isClaimable and not Players[source].battlepass.PremiumClaims[data.itemId] then
                 AddItem(source, item.name, item.amount)
                 Players[source].battlepass.PremiumClaims[data.itemId] = true
 
