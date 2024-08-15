@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             LoadAvatar();
             CreateFreePass(data.FreeItems);
             CreatePremiumPass(data.PaidItems);
-            CalculateTeir()
+            CalculateTier()
             document.body.style.display = 'block';
 
             if (PlayerData.battlepass.premium === true) {
@@ -50,13 +50,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-function CalculateTeir() {
-    let progress = Math.floor(PlayerData.battlepass.xp / XPPerLevel * 100)
+function CalculateTier() {
+    let progress = Math.floor(PlayerData.battlepass.xp / XPPerLevel * 100);
 
+    document.querySelectorAll('.tier-xp').forEach(element => {
+        element.textContent = `${PlayerData.battlepass.xp}/${XPPerLevel}xp`;
+    });
 
-    document.querySelector('.tier-xp').textContent = `${PlayerData.battlepass.xp}/${XPPerLevel}px`;
-    document.querySelector('.tier-level-span').textContent = PlayerData.battlepass.tier;
-    document.querySelector('.tier-progress-line').style.width = progress + '%';
+    document.querySelectorAll('.tier-level-span').forEach(element => {
+        element.textContent = PlayerData.battlepass.tier;
+    });
+
+    document.querySelectorAll('.tier-progress-line').forEach(element => {
+        element.style.width = progress + '%';
+    });
 }
 
 function Exit() {
@@ -221,11 +228,17 @@ function LoadAvatar() {
 
 function OpenScoreboard() {
     NUICallBack('OpenScoreboard', {}).then((response) => {
-        response.sort((a, b) => b.xp - a.xp);
+        response.sort((a, b) => {
+            if (b.tier === a.tier) {
+                return b.xp - a.xp;
+            }
+            return b.tier - a.tier;
+        });
         updateScoreboard(response);
         updateTopPlayerStats(response[0]);
     });
 }
+
 
 function OpenBattleShop() {
     NUICallBack('OpenBattleShop', {}).then((response) => {
@@ -264,9 +277,6 @@ function OpenBattleShop() {
         });
     });
 }
-
-
-
 
 function updateScoreboard(response) {
     const tableWrapper = document.querySelector('.table-wrapper');
@@ -340,7 +350,8 @@ function OpenStore() {
 }
 
 function RedeemCode() {
-    const code = document.querySelector('.redeem-input').value;
+    const inputElement = document.querySelector('.redeem-input');
+    const code = inputElement.value;
     const button = document.querySelector('.redeem-btn');
 
     button.disabled = true;
@@ -355,6 +366,7 @@ function RedeemCode() {
 
     if (!code.startsWith('tbx-')) {
         Notify('Invalid code', 'The code should start with "tbx-"');
+        inputElement.value = '';
         setTimeout(() => {
             button.disabled = false;
         }, 3000);
@@ -366,12 +378,14 @@ function RedeemCode() {
     }).then((cb) => {
         if (cb === false) {
             Notify('Invalid Code', 'Code is not yours or it is not loaded yet');
+            inputElement.value = '';
             setTimeout(() => {
                 button.disabled = false;
             }, 3000);
             return; 
         }
 
+        inputElement.value = '';
         PlayerData.battlepass.coins += Number(cb);
         document.querySelector('.coins-amount-span').textContent = PlayerData.battlepass.coins;
         Notify('Purchase Successful!', `You have successfully added ${cb} coins to your account.`);
@@ -381,6 +395,7 @@ function RedeemCode() {
         button.disabled = false;
     }, 3000);
 }
+
 
 function PurchasePremium() {
     window.invokeNative('openUrl', Config.PremiumPassPackage);

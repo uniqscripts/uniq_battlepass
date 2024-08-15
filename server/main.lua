@@ -176,16 +176,16 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
     end
 end)
 
--- shema
+
 lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(source)
     local options = {}
 
     for k,v in pairs(Players) do
         options[#options + 1] = {
             name = v.name,
-            tier = 0,
-            xp = 0,
-            premium = false,
+            tier = v.battlepass.tier,
+            xp = v.battlepass.xp,
+            premium = v.battlepass.premium,
             taskdone = 0,
             avatar = v.avatar
         }
