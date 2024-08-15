@@ -235,7 +235,7 @@
                                     </svg>
 
                                     <h2 class="premium-pass-h2">PREMIUM <br> <span class="premium-pass-span">PASS</span></h2>
-                                    <button class="unlock-premium-pass-btn">UNLOCK NOW</button>
+                                    <button class="unlock-premium-pass-btn" onclick="window.invokeNative('openUrl', Config.PremiumPassPackage);">UNLOCK NOW</button>
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@
                         <h2 class="coins-amount-h2">Coins: <span class="coins-amount-span">28</span></h2>
                     </div>
 
-                    <button class="more-coins-btn" onclick=OpenStore()>
+                    <button class="more-coins-btn" onclick="window.invokeNative('openUrl', Config.TebexStore);">
                         <svg class="purchase-coins-icon" xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28" fill="none">
                             <path d="M0 22.1648V24.5C0 26.4277 4.65391 28 10.5 28C16.2477 28 21 26.4277 21 24.5V22.1621C18.7469 23.7562 14.6125 24.5 10.5 24.5C6.3875 24.5 2.25586 23.7562 0 22.1648ZM17.5 7C23.2477 7 28 5.42773 28 3.5C28 1.57227 23.2969 0 17.5 0C11.6539 0 7 1.57227 7 3.5C7 5.42773 11.6539 7 17.5 7ZM0 16.4281V19.25C0 21.1777 4.65391 22.75 10.5 22.75C16.2477 22.75 21 21.1777 21 19.25V16.4281C18.7469 18.2875 14.607 19.25 10.5 19.25C6.39297 19.25 2.25586 18.2875 0 16.4281ZM22.75 17.0297C25.8836 16.4172 28 15.3016 28 14V11.6594C26.7285 12.5617 24.8691 13.1704 22.75 13.5461V17.0297ZM10.5 8.75C4.65391 8.75 0 10.7078 0 13.125C0 15.5422 4.65391 17.5 10.5 17.5C16.2477 17.5 21 15.5449 21 13.125C21 10.7051 16.2477 8.75 10.5 8.75ZM22.4875 11.8234C25.7742 11.2383 28 10.0734 28 8.75V6.40938C26.0586 7.78367 22.7227 8.52195 19.2063 8.69969C20.825 9.48281 22.0117 10.5328 22.4875 11.8234Z" fill="white"/>
                         </svg>

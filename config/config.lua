@@ -4,6 +4,13 @@ return {
     -- image if steam image is not loaded
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
+    -- when are stats restarted, currently At 00:00 on day-of-month 1
+    Cron = '0 0 1 * *',
+
+
+    -- if player doesn't log for certain time, delete his progress, currently after 2 months of inactivity
+    DeletePlayer = '2 MONTH',
+
     Commands = {
         battlepass = {
             name = 'battlepass',
@@ -36,8 +43,16 @@ return {
         },
     },
 
-    -- how much each level has xp
+    -- how much each level have xp
     XPPerLevel = 1000,
+
+    -- giving xp to player for playing on server
+    PlayTimeReward = {
+        enable = true,  -- if you dont want this then disable
+        interval = 5,   -- in min
+        xp = 250,       -- how much xp player will get,
+        notify = true   -- notify player that he got xp for playing on server
+    },
 
     Rewards = {
         FreePass --[[ type of pass ]] = {

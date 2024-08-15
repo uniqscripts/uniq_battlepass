@@ -1,9 +1,14 @@
+---@diagnostic disable: param-type-mismatch
 if not lib then return end
-local Players, Query = {}, {}
+local Players = {}
 local steamAPI = GetConvar('steam_webApiKey', '')
 local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
 local DaysToSec = (Config.PremiumDuration * 24 * 60 * 60)
+
+local Query = {
+    INSERT = 'INSERT INTO `uniq_battlepass` (owner, battlepass) VALUES (?, ?) ON DUPLICATE KEY UPDATE battlepass = VALUES(battlepass)'
+}
 
 if steamAPI == '' then
     warn('To load players steam images in battle pass, please set up the steam_webApiKey in your server.cfg file.')
@@ -32,7 +37,7 @@ local function GetAvatar(playerId)
 end
 
 local function CreatePlayer(playerId, bp)
-    if table.type(bp) ~= 'empty' then
+    if bp and table.type(bp) ~= 'empty' then
         if tonumber(bp.purchasedate) < (os.time() - DaysToSec) then
             bp.premium = false
         end
@@ -41,9 +46,17 @@ local function CreatePlayer(playerId, bp)
     local self = {
         id = playerId,
         name = GetPlayerName(playerId),
-        battlepass = table.type(bp) == 'empty' and { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 } or bp,
         identifier = GetIdentifier(playerId),
         avatar = GetAvatar(playerId),
+        battlepass = (bp == nil or type(bp) == 'empty') and {
+            coins = 0,
+            xp = 0,
+            tier = 0,
+            premium = false,
+            FreeClaims = {},
+            PremiumClaims = {},
+            purchasedate = 0
+        } or bp
     }
 
     Players[playerId] = self
@@ -78,45 +91,27 @@ exports('RemoveXP', RemoveXP)
 
 
 MySQL.ready(function()
-    if Framework.esx then
-        Query = {
-            column = 'SHOW COLUMNS FROM `users`',
-            alter = 'ALTER TABLE `users` ADD COLUMN `battlepass` LONGTEXT DEFAULT "[]"',
-            select = 'SELECT `battlepass` FROM `users` WHERE `identifier` = ?',
-            update = 'UPDATE `users` SET `battlepass` = ? WHERE `identifier` = ?'
-        }
-    elseif Framework.qb then
-        Query = {
-            column = 'SHOW COLUMNS FROM `players`',
-            alter = 'ALTER TABLE `players` ADD COLUMN `battlepass` LONGTEXT DEFAULT "[]"',
-            select = 'SELECT `battlepass` FROM `players` WHERE `citizenid` = ?',
-            update = 'UPDATE `players` SET `battlepass` = ? WHERE `citizenid` = ?'
-        }
+    local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass`')
+
+    if not success then
+        MySQL.query([[
+            CREATE TABLE IF NOT EXISTS `uniq_battlepass` (
+                `owner` varchar(72) DEFAULT NULL,
+                `battlepass` longtext DEFAULT NULL,
+                `lastupdated` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+                UNIQUE KEY `owner` (`owner`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+        ]])
+
+        print('^2Successfully added table uniq_battlepass to database^0')
     end
 
-    local found = false
-    local datatype = MySQL.query.await(Query.column)
-
-    if datatype then
-        for i = 1, #datatype do
-            if datatype[i].Field == 'battlepass' then
-                found = true
-                break
-            end
-        end
-
-        if not found then
-            MySQL.query(Query.alter)
-            print('^2Successfully added column battlepass to database^0')
-        end
-    end
-
-    local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass_codes`')
+    success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass_codes`')
 
     if not success then
         MySQL.query([[
             CREATE TABLE `uniq_battlepass_codes` (
-                `identifier` varchar(46) DEFAULT NULL,
+                `identifier` varchar(72) DEFAULT NULL,
                 `code` varchar(100) DEFAULT NULL,
                 `amount` int(11) DEFAULT NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -125,6 +120,9 @@ MySQL.ready(function()
         print('^2Successfully added uniq_battlepass_codes table to SQL^0')
     end
 
+
+    pcall(MySQL.query.await, ('DELETE FROM `uniq_battlepass` WHERE lastupdated < (NOW() - INTERVAL %s)'):format(Config.DeletePlayer))
+
     local players = GetActivePlayers()
 
     for i = 1, #players do
@@ -132,47 +130,10 @@ MySQL.ready(function()
         local identifier = GetIdentifier(playerId)
 
         if identifier then
-            local query = MySQL.query.await(Query.select, { identifier })
+            local battlepass = MySQL.prepare.await('SELECT `battlepass` FROM `uniq_battlepass` WHERE `owner` = ?', { identifier })
 
-            if query[1] then
-                CreatePlayer(playerId, json.decode(query[1].battlepass))
-            end
+            CreatePlayer(playerId, battlepass and json.decode(battlepass))
         end
-    end
-end)
-
-
-AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
-    if xPlayer then
-        local query = MySQL.query.await(Query.select, { xPlayer.identifier })
-
-        if query[1] then
-            CreatePlayer(playerId, json.decode(query[1].battlepass))
-        end
-    end
-end)
-
-AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
-    if Player then
-        local query = MySQL.query.await(Query.select, { Player.PlayerData.citizenid })
-
-        if query[1] then
-            CreatePlayer(Player.PlayerData.source, json.decode(query[1].battlepass))
-        end
-    end
-end)
-
-AddEventHandler("esx:playerLogout", function(playerId)
-    if Players[playerId] then
-        MySQL.update(Query.update, { json.encode(Players[playerId].battlepass, { sort_keys = true }), Players[playerId].identifier })
-        Players[playerId] = nil
-    end
-end)
-
-AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
-    if Players[playerId] then
-        MySQL.update(Query.update, { json.encode(Players[playerId].battlepass, { sort_keys = true }), Players[playerId].identifier })
-        Players[playerId] = nil
     end
 end)
 
@@ -283,7 +244,7 @@ local function SaveDB()
 
     for playerId, data in pairs(Players) do
         size += 1
-        insertTable[size] = { query = Query.update, values = { json.encode(Players[playerId].battlepass, { sort_keys = true }), Players[playerId].identifier } }
+        insertTable[size] = { query = Query.INSERT, values = { data.identifier, json.encode(data.battlepass, { sort_keys = true }) } }
     end
 
     if size > 0 then
@@ -292,12 +253,6 @@ local function SaveDB()
         if not success then print(response) end
     end
 end
-
-AddEventHandler('onResourceStop', function(name)
-    if cache.resource == name then
-        SaveDB()
-    end
-end)
 
 RegisterCommand(Config.BuyCoinsCommand, function (source, args, raw)
     if source ~= 0 then return end
@@ -451,5 +406,88 @@ lib.addCommand(Config.Commands.givexp.name, {
 end)
 
 -- resetane stats prvog
--- premium battlepass
 -- taskovi
+
+
+if Config.PlayTimeReward.enable then
+    CreateThread(function()
+        while true do
+            local targetIds = {}
+
+            for k, v in pairs(Players) do
+                AddXP(v.id, Config.PlayTimeReward.xp)
+
+                if Config.PlayTimeReward.notify then
+                    targetIds[#targetIds + 1] = v.id
+                end
+            end
+
+            if #targetIds > 0 then
+                lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, ('You got %sxp for playing on server'):format(Config.PlayTimeReward.xp), 'inform')
+            end
+
+            Wait(60000 * Config.PlayTimeReward.interval)
+        end
+    end)
+end
+
+
+lib.cron.new(Config.Cron, function()
+
+end)
+
+
+AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
+    if xPlayer then
+        local battlepass = MySQL.prepare.await('SELECT `battlepass` FROM `uniq_battlepass` WHERE `owner` = ?', { xPlayer.identifier })
+
+        CreatePlayer(playerId, battlepass and json.decode(battlepass))
+    end
+end)
+
+
+AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
+    if Player then
+        local battlepass = MySQL.prepare.await('SELECT `battlepass` FROM `uniq_battlepass` WHERE `owner` = ?', { Player.PlayerData.citizenid })
+
+        CreatePlayer(Player.PlayerData.source, battlepass and json.decode(battlepass))
+    end
+end)
+
+
+AddEventHandler("esx:playerLogout", function(playerId)
+    if Players[playerId] then
+        MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
+        Players[playerId] = nil
+    end
+end)
+
+
+AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
+    if Players[playerId] then
+        MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
+        Players[playerId] = nil
+    end
+end)
+
+
+AddEventHandler('onResourceStop', function(name)
+    if cache.resource == name then SaveDB() end
+end)
+
+
+AddEventHandler('txAdmin:events:serverShuttingDown', function()
+	SaveDB()
+end)
+
+
+AddEventHandler('txAdmin:events:scheduledRestart', function(eventData)
+    if eventData.secondsRemaining ~= 60 then return end
+
+	SaveDB()
+end)
+
+
+lib.cron.new('*/5 * * * *', function()
+    SaveDB()
+end)

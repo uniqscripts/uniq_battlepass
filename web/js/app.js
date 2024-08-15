@@ -27,14 +27,13 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.exit-btn').textContent = Config.UI.exitButtonText;
     document.querySelector('.exit-btn').addEventListener('click', Exit);
 
+    const actions = {
+        '.unlock-tier-btn': ClaimItem,
+        '.coins-purchase': HandlePurchase,
+        '.redeem-btn': RedeemCode,
+    };
+
     document.addEventListener('click', (event) => {
-        const actions = {
-            '.unlock-tier-btn': ClaimItem,
-            '.coins-purchase': HandlePurchase,
-            '.redeem-btn': RedeemCode,
-            '.unlock-premium-pass-btn': PurchasePremium,
-        };
-    
         Object.keys(actions).some((selector) => {
             if (event.target.matches(selector)) {
                 actions[selector](event);
@@ -345,10 +344,6 @@ async function NUICallBack(endpoint, data = {}) {
     return await response.json();
 }
 
-function OpenStore() {
-    window.invokeNative('openUrl', Config.TebexStore);
-}
-
 function RedeemCode() {
     const inputElement = document.querySelector('.redeem-input');
     const code = inputElement.value;
@@ -395,12 +390,6 @@ function RedeemCode() {
         button.disabled = false;
     }, 3000);
 }
-
-
-function PurchasePremium() {
-    window.invokeNative('openUrl', Config.PremiumPassPackage);
-}
-
 function Notify(title, message) {
     const notification = document.createElement('div');
     notification.className = `notification info`;
