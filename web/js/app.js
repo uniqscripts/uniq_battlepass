@@ -43,12 +43,6 @@ const locale = (str, ...args) => {
     return lstr;
 };
 
-const printf = (template, ...args) => {
-    return template.replace(/{(\d+)}/g, (match, number) => {
-        return typeof args[number] !== 'undefined' ? args[number] : match;
-    });
-};
-
 
 document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('message', ({ data }) => {

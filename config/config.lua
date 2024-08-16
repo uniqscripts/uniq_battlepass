@@ -1,6 +1,4 @@
 return {
-    Locale = 'en',
-
     -- image if steam image is not loaded
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
@@ -83,10 +81,8 @@ return {
                 { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
             [3] = { -- 3rd week of month
-                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 10, xp = 150 }, amount = 200 },
+                -- example for vehicle (will be inserted in owned_vehicles or player_vehicles depending on your framework)
+                { name = 'zentorno', label = 'Zentorno', img = '', requirements = { tier = 10, xp = 150 }, amount = 1, ownable = true },
             },
             [4] = { -- 4th week of month
                 { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
