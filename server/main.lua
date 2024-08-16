@@ -167,8 +167,8 @@ end)
 lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
     if data.itemId then
         data.itemId = tonumber(data.itemId)
-        if Config.BattleShop[data.itemId] then
-            local item = Config.BattleShop[data.itemId]
+        if Config.BattleShop[data.itemId][week] then
+            local item = Config.BattleShop[data.itemId][week]
 
             if Players[playerId].battlepass.coins >= item.coins then
                 AddItem(playerId, item.name, item.amount)

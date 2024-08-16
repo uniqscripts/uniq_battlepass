@@ -1,6 +1,54 @@
 const resource = GetParentResourceName();
 let PlayerData = {};
 let XPPerLevel = 0;
+let dict = {};
+
+(async function loadLocale() {
+    try {
+        const response = await fetch(`../locales/${Config.Locales}.json`);
+        
+        if (!response.ok) {
+            throw new Error(`Could not fetch locale: en.json`);
+        }
+        
+        dict = await response.json();
+    } catch (error) {
+        console.error('Error loading locale:', error);
+        dict = {};
+    }
+})();
+
+const locale = (str, ...args) => {
+    let lstr = dict[str];
+    
+    if (!lstr) {
+        console.warn(`Missing localization for key: ${str}`);
+        return str;
+    }
+
+    if (typeof lstr !== 'string') {
+        return lstr;
+    }
+
+    const regExp = new RegExp(/\$\{([^}]+)\}/g);
+    const matches = lstr.match(regExp);
+
+    if (matches) {
+        matches.forEach((match, index) => {
+            const replacement = args[index] || '';
+            lstr = lstr.replace(match, replacement);
+        });
+    }
+
+    return lstr;
+};
+
+const printf = (template, ...args) => {
+    return template.replace(/{(\d+)}/g, (match, number) => {
+        return typeof args[number] !== 'undefined' ? args[number] : match;
+    });
+};
+
 
 document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('message', ({ data }) => {
@@ -8,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             PlayerData = data.PlayerData;
             XPPerLevel = data.XPPerLevel;
 
+            Localize();
             LoadAvatar();
             CreateFreePass(data.FreeItems);
             CreatePremiumPass(data.PaidItems);
@@ -24,7 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    document.querySelector('.exit-btn').textContent = Config.UI.exitButtonText;
+
     document.querySelector('.exit-btn').addEventListener('click', Exit);
 
     const actions = {
@@ -48,6 +97,74 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+function Localize() {
+    const setTextContent = (selector, key) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = locale(key);
+        }
+    };
+
+    const setTextContentFirst = (selector, key) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.firstChild.textContent = locale(key);
+        }
+    };
+
+    const setInnerHTML = (selector, key) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.innerHTML = locale(key);
+        }
+    };
+
+    setTextContent('.battlepass-heading', 'ui_battlepass');
+    setTextContent('#selected-btn', 'ui_overview');
+    setTextContent('.nav-centered .nav-btn:nth-child(2)', 'ui_leaderboard');
+    setTextContent('.nav-centered .nav-btn:nth-child(3)', 'ui_battlepass_shop');
+    setTextContent('.exit-btn', 'ui_esc');
+    setTextContent('.task-btn', 'ui_tasks');
+    setTextContent('.premium-pass-h2', 'ui_premium');
+    setTextContent('.premium-pass-span', 'ui_pass');
+    setTextContent('.unlock-premium-pass-btn', 'ui_unlock');
+    setInnerHTML('.free-pass-h2', 'ui_freepass');
+    setInnerHTML('.exit-p', 'ui_battlepass_menu');
+    setTextContentFirst('.coins-amount-h2', 'ui_coins')
+    setTextContentFirst('.tier-level-h2', 'ui_tier')
+    setTextContentFirst('#tier-level-h2', 'ui_tier')
+
+    const tableHeadings = document.querySelectorAll('.table-h2');
+    const tableHeadingKeys = [
+        'ui_rank', 'ui_player', 'ui_tier',
+        'ui_xp', 'ui_battlepass_type', 'ui_tasks_completed'
+    ];
+    
+    tableHeadings.forEach((heading, index) => {
+        if (heading && tableHeadingKeys[index]) {
+            heading.textContent = locale(tableHeadingKeys[index]);
+        }
+    });
+
+    const userStats = document.querySelectorAll('.table-user-stats .table-h3');
+    const userStatKeys = ['ui_rank_number', 'ui_stat_1', 'ui_stat_2', 'ui_completed_tasks'];
+    
+    userStats.forEach((stat, index) => {
+        if (stat && userStatKeys[index]) {
+            stat.textContent = locale(userStatKeys[index]);
+        }
+    });
+
+    setTextContent('#table-premium-pass', 'ui_premium_type');
+    setTextContent('.coins-title', 'ui_coin_shop');
+    setTextContent('.coins-info', 'ui_coin_shop_description');
+    setTextContent('.purchase-title', 'ui_purchase_more_coins');
+    setTextContent('.note', 'ui_purchase_note');
+    setTextContent('.redeem-coins-h2', 'ui_redeem_coins');
+    setTextContent('.redeem-btn', 'ui_redeem');
+}
 
 function CalculateTier() {
     let progress = Math.floor(PlayerData.battlepass.xp / XPPerLevel * 100);
@@ -126,7 +243,7 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
         overlay.className = 'overlay';
 
         if (isClaimable) {
-            xpLabel.textContent = Config.UI.claimButtonText;
+            xpLabel.textContent = locale('ui_claim');
             xpLabel.classList.add('claimable');
             xpLabel.dataset.itemId = Number(key) + 1;
             xpLabel.dataset.passtype = type;
@@ -183,7 +300,7 @@ function ClaimItem(event) {
         pass: button.dataset.passtype
     }).then((cb) => {
         if (cb.resp === true) {
-            Notify('Reward Claimed!', `You have successfully claimed x${cb.item.amount} ${cb.item.label}`);
+            Notify(locale('ui_notify_claimed_title'), locale('ui_notify_claimed_desc', cb.item.amount, cb.item.label));
 
             const btn = button.closest('.reward-box')
 
@@ -206,13 +323,13 @@ function HandlePurchase(event) {
         itemId: button.dataset.itemId,
     }).then((cb) => {
         if (cb.resp === false) {
-            Notify('Insufficient amount', 'You don\'t have enough coins');
+            Notify(locale('ui_notify_no_amont_title'), locale('ui_notify_no_amont_desc'));
             return;
         }
 
         PlayerData.battlepass.coins = cb.coins;
         document.querySelector('.coins-amount-span').textContent = cb.coins;
-        Notify('Purchase Successful!', `You have successfully purchased ${cb.item.amount} ${cb.item.label} for ${cb.item.coins} coins.`);
+        Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label, cb.item.coins));
     });
 
     setTimeout(() => {
@@ -221,7 +338,7 @@ function HandlePurchase(event) {
 }
 
 function LoadAvatar() {
-    document.querySelector('.steam-nick').textContent = Config.UI.helloText.replace('%s', PlayerData.name);
+    document.querySelector('.steam-nick').textContent = locale('ui_hello', PlayerData.name)
     document.querySelector('.steam-image').src = PlayerData.avatar;
 }
 
@@ -266,7 +383,7 @@ function OpenBattleShop() {
             const coinsPurchaseBtn = document.createElement('button');
             coinsPurchaseBtn.className = 'coins-purchase';
             coinsPurchaseBtn.dataset.itemId = Number(key) + 1;
-            coinsPurchaseBtn.textContent = 'PURCHASE';
+            coinsPurchaseBtn.textContent = locale('ui_purchase');
 
             coinsBuyWrapper.append(coinsPriceWrapper, coinsPurchaseBtn);
 
@@ -295,7 +412,7 @@ function createScoreboardRow(item, index) {
     const row = document.createElement('div');
     row.className = 'table-row';
 
-    row.appendChild(createTextElement('h3', 'table-h3', Config.UI.rankLabel.replace('%d', index + 1)));
+    row.appendChild(createTextElement('h3', 'table-h3', locale('ui_ranked', index + 1)));
     
     const userInfo = document.createElement('div');
     userInfo.className = 'table-user-info';
@@ -305,7 +422,7 @@ function createScoreboardRow(item, index) {
 
     row.appendChild(createTableElement('tier', item.tier));
     row.appendChild(createTableElement('xp', item.xp.toLocaleString()));
-    row.appendChild(createTableElement('bp', item.premium ? Config.UI.premiumPassText : Config.UI.freePassText, item.premium ? 'table-premium-pass' : ''));
+    row.appendChild(createTableElement('bp', item.premium ? locale('ui_premium_type') : locale('ui_free_type'), item.premium ? 'table-premium-pass' : ''));
     row.appendChild(createTableElement('taskdone', item.taskdone));
 
     return row;
@@ -322,12 +439,12 @@ function updateTopPlayerStats(topPlayer) {
         const topPlayerElements = document.querySelectorAll('.table-user-stats h3.table-h3');
         const userInfo = document.querySelector('.table-user-stats .table-user-info');
 
-        topPlayerElements[0].textContent = Config.UI.rankLabel.replace('%d', 1);
+        topPlayerElements[0].textContent = locale('ui_ranked', 1);
         userInfo.querySelector('.table-steam-img').src = topPlayer.avatar;
         userInfo.querySelector('h3.table-h3').textContent = topPlayer.name;
         topPlayerElements[2].textContent = topPlayer.tier;
         topPlayerElements[3].textContent = topPlayer.xp.toLocaleString();
-        topPlayerElements[4].textContent = topPlayer.premium ? Config.UI.premiumPassText : Config.UI.freePassText;
+        topPlayerElements[4].textContent = topPlayer.premium ? locale('ui_premium_type') : locale('ui_free_type');
         topPlayerElements[4].id = topPlayer.premium ? 'table-premium-pass' : 'table-free-pass';
         topPlayerElements[5].textContent = topPlayer.taskdone;
     }
@@ -352,7 +469,7 @@ function RedeemCode() {
     button.disabled = true;
 
     if (code === '') {
-        Notify('Invalid code', 'The code cannot be empty');
+        Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_empty'));
         setTimeout(() => {
             button.disabled = false;
         }, 3000);
@@ -360,7 +477,7 @@ function RedeemCode() {
     }
 
     if (!code.startsWith('tbx-')) {
-        Notify('Invalid code', 'The code should start with "tbx-"');
+        Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_start'));
         inputElement.value = '';
         setTimeout(() => {
             button.disabled = false;
@@ -372,7 +489,7 @@ function RedeemCode() {
         code: code,
     }).then((cb) => {
         if (cb === false) {
-            Notify('Invalid Code', 'Code is not yours or it is not loaded yet');
+            Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_not'));
             inputElement.value = '';
             setTimeout(() => {
                 button.disabled = false;
@@ -383,7 +500,7 @@ function RedeemCode() {
         inputElement.value = '';
         PlayerData.battlepass.coins += Number(cb);
         document.querySelector('.coins-amount-span').textContent = PlayerData.battlepass.coins;
-        Notify('Purchase Successful!', `You have successfully added ${cb} coins to your account.`);
+        Notify(locale('ui_notify_purchase_title'), locale('ui_notify_added_coins', cb));
     });
 
     setTimeout(() => {

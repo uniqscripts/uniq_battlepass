@@ -8,6 +8,7 @@ version '1.0'
 files { 
 	'config/config.js',
 	'config/config.lua',
+	'locales/en.json',
 	'web/**'
 }
 
