@@ -5,17 +5,16 @@ lua54 'yes'
 game 'gta5'
 version '1.0'
 
-files { 
+files {
 	'config/config.js',
 	'config/config.lua',
-	'locales/en.json',
+	'locales/**',
 	'web/**'
 }
 
 shared_scripts {
 	'@ox_lib/init.lua',
 	'setup.lua',
-	'locales.lua',
 	'locales/*.lua',
 }
 server_scripts {

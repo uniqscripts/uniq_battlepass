@@ -82,7 +82,7 @@ return {
             },
             [3] = { -- 3rd week of month
                 -- example for vehicle (will be inserted in owned_vehicles or player_vehicles depending on your framework)
-                { name = 'zentorno', label = 'Zentorno', img = '', requirements = { tier = 10, xp = 150 }, amount = 1, ownable = true },
+                { name = 'zentorno', label = 'Zentorno', img = 'zentorno.png', requirements = { tier = 10, xp = 150 }, amount = 1, ownable = true },
             },
             [4] = { -- 4th week of month
                 { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
