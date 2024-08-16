@@ -4,5 +4,5 @@ local QBCore = exports['qb-core']:GetCoreObject()
 
 
 function GetIdentifier(playerId)
-    return QBCore.GetPlayer(playerId).PlayerData.citizenid
+    return QBCore.Functions.GetPlayer(playerId).PlayerData.citizenid
 end
