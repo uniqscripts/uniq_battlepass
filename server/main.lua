@@ -5,6 +5,7 @@ local steamAPI = GetConvar('steam_webApiKey', '')
 local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
 local DaysToSec = (Config.PremiumDuration * 24 * 60 * 60)
+lib.locale()
 
 local Query = {
     INSERT = 'INSERT INTO `uniq_battlepass` (owner, battlepass) VALUES (?, ?) ON DUPLICATE KEY UPDATE battlepass = VALUES(battlepass)'
@@ -281,7 +282,7 @@ RegisterCommand(Config.BuyCoinsCommand, function (source, args, raw)
 
     if identifier then
         MySQL.insert.await('INSERT INTO `uniq_battlepass_codes` (identifier, code, amount) VALUES (?, ?, ?)', { identifier, code, amount })
-        TriggerClientEvent('uniq_battlepass:Notify', id, ('You have successfully purchased %s coins'):format(amount), 'success')
+        TriggerClientEvent('uniq_battlepass:Notify', id, locale('notify_coins', amount), 'success')
     end
 end)
 
@@ -295,7 +296,7 @@ RegisterCommand(Config.BuyPremiumPassCommand, function(source, args, raw)
         Players[playerId].battlepass.premium = true
         Players[playerId].battlepass.purchasedate = os.time()
 
-        TriggerClientEvent('uniq_battlepass:Notify', playerId, ('You have successfully purchased Premium Pass.\n Pass will last for %s days'):format(Config.PremiumDuration), 'success')
+        TriggerClientEvent('uniq_battlepass:Notify', playerId, locale('notify_premium_purchase', Config.PremiumDuration), 'success')
     end
 end)
 
@@ -317,9 +318,9 @@ lib.addCommand(Config.Commands.givecoins.name, {
 }, function(source, args, raw)
     if Players[args.target] then
         Players[args.target].battlepass.coins += args.count or 10
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, ('You got %s coints from admin'):format(args.count or 10))
+        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_got_coins', args.count or 10))
     else
-        TriggerClientEvent('uniq_battlepass:Notify', source, 'No player with that id was found')
+        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_player'))
     end
 end)
 
@@ -346,9 +347,9 @@ lib.addCommand(Config.Commands.removecoins.name, {
             Players[args.target].battlepass.coins = 0
         end
 
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, ('%s coins were removed from you by admin'):format(args.count or 10))
+        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_removed_coins', args.count or 10))
     else
-        TriggerClientEvent('uniq_battlepass:Notify', source, 'No player with that id was found')
+        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_player'))
     end
 end)
 
@@ -374,7 +375,7 @@ lib.addCommand(Config.Commands.givepass.name, {
         Players[args.target].battlepass.premium = true
         Players[args.target].battlepass.purchasedate = os.time()
 
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, ('Admin gave you Premium Pass.\n Pass will last for %s days'):format(Config.PremiumDuration), 'success')
+        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_got_pass_admin', Config.PremiumDuration), 'success')
     end
 end)
 
@@ -392,7 +393,7 @@ lib.addCommand(Config.Commands.wipe.name, {
     if Players[args.target] then
         Players[args.target].battlepass = { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
 
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, 'Your battlepass progress is wiped by admin', 'warning')
+        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_wiped'), 'warning')
     end
 end)
 
@@ -414,11 +415,31 @@ lib.addCommand(Config.Commands.givexp.name, {
     restricted = Config.Commands.givexp.restricted
 }, function(source, args, raw)
     AddXP(args.target, args.count)
-    TriggerClientEvent('uniq_battlepass:Notify', args.target, ('You got %s xp by admin'):format(args.count), 'inform')
+    TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_got_xp', args.count), 'inform')
 end)
 
--- resetane stats prvog
--- taskovi
+local function WipeAll()
+    local targetIds = {}
+
+    for k, v in pairs(Players) do
+        targetIds[#targetIds + 1] = v.id
+
+        v.battlepass = { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
+    end
+
+    if #targetIds > 0 then
+        lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, locale('notify_wiped'), 'inform')
+    end
+
+    MySQL.query('DELETE FROM uniq_battlepass')
+end
+
+lib.addCommand(Config.Commands.wipeall.name, {
+    help = Config.Commands.wipeall.help,
+    restricted = Config.Commands.wipeall.restricted
+}, function(source, args, raw)
+    WipeAll()
+end)
 
 
 if Config.PlayTimeReward.enable then
@@ -435,18 +456,13 @@ if Config.PlayTimeReward.enable then
             end
 
             if #targetIds > 0 then
-                lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, ('You got %sxp for playing on server'):format(Config.PlayTimeReward.xp), 'inform')
+                lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, locale('notify_got_xp_playing', Config.PlayTimeReward.xp), 'inform')
             end
 
             Wait(60000 * Config.PlayTimeReward.interval)
         end
     end)
 end
-
-
-lib.cron.new(Config.Cron, function()
-
-end)
 
 
 AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
@@ -502,4 +518,8 @@ end)
 
 lib.cron.new('*/5 * * * *', function()
     SaveDB()
+end)
+
+lib.cron.new(Config.Cron, function ()
+    WipeAll()
 end)

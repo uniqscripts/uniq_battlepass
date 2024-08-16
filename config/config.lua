@@ -4,7 +4,7 @@ return {
     -- image if steam image is not loaded
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
-    -- When to restart stats, currently At 00:00 on day-of-month 1
+    -- When to restart battlepass stats of all players, currently At 00:00 on day-of-month 1, if you server is off at that time, you can use at any time /wipeall command
     Cron = '0 0 1 * *',
 
 
@@ -41,6 +41,11 @@ return {
             help = 'Gives xp to player',
             restricted = 'group.admin'
         },
+        wipeall = {
+            name = 'wipeall',
+            help = 'Wiples battlepass progress of all players (online & offline)',
+            restricted = 'group.admin'
+        }
     },
 
     -- how much each level have xp
