@@ -54,5 +54,6 @@
     "notify_got_pass_admin": "Admin gave you Premium Pass.\n Pass will last for %s days",
     "notify_wiped": "Your battlepass progress is wiped by admin",
     "notify_got_xp": "You got %s xp by admin",
-    "notify_got_xp_playing": "You got %sxp for playing on server"
+    "notify_got_xp_playing": "You got %sxp for playing on server",
+    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage"
 }

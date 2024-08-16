@@ -166,20 +166,35 @@ end)
 
 
 lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
-    if data.itemId then
-        data.itemId = tonumber(data.itemId)
-        if Config.BattleShop[data.itemId][week] then
-            local item = Config.BattleShop[data.itemId][week]
+    if data.index then
+        data.index = tonumber(data.index)
+        if Config.BattleShop[week][data.index] then
+            local item = Config.BattleShop[week][data.index]
 
             if Players[playerId].battlepass.coins >= item.coins then
-                AddItem(playerId, item.name, item.amount)
-                Players[playerId].battlepass.coins -= item.coins
+                if item.garage then
+                    local identifier = GetIdentifier(playerId)
+                    local cb = InsertInGarage(item.name, identifier, item.garage, playerId)
 
-                if 0 > Players[playerId].battlepass.coins then
-                    Players[playerId].battlepass.coins = 0
+                    if cb then
+                        Players[playerId].battlepass.coins -= item.coins
+
+                        if 0 > Players[playerId].battlepass.coins then
+                            Players[playerId].battlepass.coins = 0
+                        end
+                    
+                        return cb, Players[playerId].battlepass.coins, item
+                    end
+                else
+                    AddItem(playerId, item.name, item.amount)
+                    Players[playerId].battlepass.coins -= item.coins
+
+                    if 0 > Players[playerId].battlepass.coins then
+                        Players[playerId].battlepass.coins = 0
+                    end
+
+                    return true, Players[playerId].battlepass.coins, item
                 end
-
-                return true, Players[playerId].battlepass.coins, item
             end
 
             return false
@@ -207,10 +222,10 @@ end)
 
 lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
     if data.pass == 'free' then
-        data.itemId = tonumber(data.itemId)
+        data.index = tonumber(data.index)
 
-        if Config.Rewards.FreePass[week][data.itemId] then
-            local item = Config.Rewards.FreePass[week][data.itemId]
+        if Config.Rewards.FreePass[week][data.index] then
+            local item = Config.Rewards.FreePass[week][data.index]
             local currentXP = Players[source].battlepass.xp
             local currentTier = Players[source].battlepass.tier
             local requiredXP = item.requirements.xp
@@ -219,18 +234,29 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isXPMet = currentXP >= requiredXP
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if isClaimable and not Players[source].battlepass.FreeClaims[data.itemId] then
-                AddItem(source, item.name, item.amount)
-                Players[source].battlepass.FreeClaims[data.itemId] = true
+            if isClaimable and not Players[source].battlepass.FreeClaims[data.index] then
 
-                return true, Config.Rewards.FreePass[week][data.itemId]
+                if item.garage then
+                    local identifier = GetIdentifier(source)
+                    local cb = InsertInGarage(item.name, identifier, item.garage, source)
+
+                    if cb then
+                        Players[source].battlepass.FreeClaims[data.index] = true
+                        return cb, Config.Rewards.FreePass[week][data.index]
+                    end
+                else
+                    AddItem(source, item.name, item.amount)
+                    Players[source].battlepass.FreeClaims[data.index] = true
+
+                    return true, Config.Rewards.FreePass[week][data.index]
+                end
             end
         end
     elseif data.pass == 'premium' then
-        data.itemId = tonumber(data.itemId)
+        data.index = tonumber(data.index)
 
-        if Config.Rewards.PremiumPass[week][data.itemId] then
-            local item = Config.Rewards.PremiumPass[week][data.itemId]
+        if Config.Rewards.PremiumPass[week][data.index] then
+            local item = Config.Rewards.PremiumPass[week][data.index]
             local currentXP = Players[source].battlepass.xp
             local currentTier = Players[source].battlepass.tier
             local requiredXP = item.requirements.xp
@@ -239,11 +265,11 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isXPMet = currentXP >= requiredXP
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if isClaimable and not Players[source].battlepass.PremiumClaims[data.itemId] then
+            if isClaimable and not Players[source].battlepass.PremiumClaims[data.index] then
                 AddItem(source, item.name, item.amount)
-                Players[source].battlepass.PremiumClaims[data.itemId] = true
+                Players[source].battlepass.PremiumClaims[data.index] = true
 
-                return true, Config.Rewards.PremiumPass[week][data.itemId]
+                return true, Config.Rewards.PremiumPass[week][data.index]
             end
         end
     end

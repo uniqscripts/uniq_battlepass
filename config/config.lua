@@ -9,6 +9,9 @@ return {
     -- if player doesn't log for certain time, delete his progress, currently after 2 months of inactivity
     DeletePlayer = '2 MONTH',
 
+    -- https://overextended.dev/ox_lib/Modules/String/Shared
+    PlateFormat = '........',
+
     Commands = {
         battlepass = {
             name = 'battlepass',
@@ -82,7 +85,16 @@ return {
             },
             [3] = { -- 3rd week of month
                 -- example for vehicle (will be inserted in owned_vehicles or player_vehicles depending on your framework)
-                { name = 'zentorno', label = 'Zentorno', img = 'zentorno.png', requirements = { tier = 10, xp = 150 }, amount = 1, ownable = true },
+                -- if you leave img = '' it will take image from web/img, table garage must be configured for your garage
+                {
+                    name = 'zentorno',
+                    label = 'Zentorno',
+                    img = 'https://docs.fivem.net/vehicles/zentorno.webp',
+                    requirements = { tier = 10, xp = 150 },
+                    amount = 1, -- this is just for ui, it will always give only 1
+                    garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
+                    -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+                },
             },
             [4] = { -- 4th week of month
                 { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
@@ -102,6 +114,15 @@ return {
             },
             [3] = { -- 3rd week of month
                 { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
+                {
+                    name = 'zentorno',
+                    label = 'Zentorno',
+                    img = 'https://docs.fivem.net/vehicles/zentorno.webp',
+                    requirements = { tier = 10, xp = 150 },
+                    amount = 1, -- this is just for ui, it will always give only 1
+                    garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
+                    -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+                },
             },
             [4] = { -- 4th week of month
                 { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
@@ -118,6 +139,16 @@ return {
         },
         [3] = { -- week of month
             { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', coins = 50, amount = 10 },
+            {
+                name = 'zentorno',
+                label = 'Zentorno',
+                img = 'https://docs.fivem.net/vehicles/zentorno.webp',
+                coins = 50,
+                amount = 1, -- this is just for ui, it will always give only 1
+                garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
+                -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+            },
+
         },
         [4] = { -- week of month
             { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },

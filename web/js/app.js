@@ -239,7 +239,7 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
         if (isClaimable) {
             xpLabel.textContent = locale('ui_claim');
             xpLabel.classList.add('claimable');
-            xpLabel.dataset.itemId = Number(key) + 1;
+            xpLabel.dataset.index = Number(key) + 1;
             xpLabel.dataset.passtype = type;
             overlay.classList.add('unclaimed-reward-overlay');
         } else {
@@ -259,8 +259,18 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
         svg.style.display = 'block';
     }
 
+    let img;
+
+    if (item.garage && item.img !== '') {
+        img = item.img;
+    } else if (!item.garage) {
+        img = Config.ImagePath.replace('%s', item.img || item.name);
+    } else if (item.img === '') {
+        img = `../web/img/${item.name}.png`;
+    }
+
     rewardBox.append(
-        createImageElement(Config.ImagePath.replace('%s', item.img || item.name)),
+        createImageElement(img),
         createTextElement('h3', 'item-name', item.label),
         createTextElement('h4', 'item-count', `${item.amount}x`)
     );
@@ -290,11 +300,15 @@ function ClaimItem(event) {
     button.disabled = true;
 
     NUICallBack('claimReward', {
-        itemId: button.dataset.itemId,
+        index: button.dataset.index,
         pass: button.dataset.passtype
     }).then((cb) => {
         if (cb.resp === true) {
-            Notify(locale('ui_notify_claimed_title'), locale('ui_notify_claimed_desc', cb.item.amount, cb.item.label));
+            if (cb.item.garage) {
+                Notify(locale('ui_notify_claimed_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.garage.garage))
+            } else {
+                Notify(locale('ui_notify_claimed_title'), locale('ui_notify_claimed_desc', cb.item.amount, cb.item.label));
+            }
 
             const btn = button.closest('.reward-box')
 
@@ -314,7 +328,7 @@ function HandlePurchase(event) {
     button.disabled = true;
 
     NUICallBack('BattleShopPurchase', {
-        itemId: button.dataset.itemId,
+        index: button.dataset.index,
     }).then((cb) => {
         if (cb.resp === false) {
             Notify(locale('ui_notify_no_amont_title'), locale('ui_notify_no_amont_desc'));
@@ -323,7 +337,13 @@ function HandlePurchase(event) {
 
         PlayerData.battlepass.coins = cb.coins;
         document.querySelector('.coins-amount-span').textContent = cb.coins;
-        Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label, cb.item.coins));
+
+        if (cb.item.garage) {
+            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.garage.garage))
+        } else {
+            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label));
+        }
+
     });
 
     setTimeout(() => {
@@ -363,7 +383,18 @@ function OpenBattleShop() {
 
             const itemName = createTextElement('h2', 'coins-item-name', item.label);
             const itemAmount = createTextElement('p', 'coins-item-amount', `${item.amount}x`);
-            const itemImage = createImageElement(Config.ImagePath.replace('%s', item.img || item.name));
+
+            let img;
+
+            if (item.garage && item.img !== '') {
+                img = item.img;
+            } else if (!item.garage) {
+                img = Config.ImagePath.replace('%s', item.img || item.name);
+            } else if (item.img === '') {
+                img = `../web/img/${item.name}.png`;
+            }
+
+            const itemImage = createImageElement(img);
             const coinsBuyWrapper = document.createElement('div');
             coinsBuyWrapper.className = 'coins-buy-wrapper';
 
@@ -376,7 +407,7 @@ function OpenBattleShop() {
 
             const coinsPurchaseBtn = document.createElement('button');
             coinsPurchaseBtn.className = 'coins-purchase';
-            coinsPurchaseBtn.dataset.itemId = Number(key) + 1;
+            coinsPurchaseBtn.dataset.index = Number(key) + 1;
             coinsPurchaseBtn.textContent = locale('ui_purchase');
 
             coinsBuyWrapper.append(coinsPriceWrapper, coinsPurchaseBtn);

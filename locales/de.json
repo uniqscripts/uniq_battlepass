@@ -54,5 +54,6 @@
     "notify_got_pass_admin": "Admin hat dir den Premium Pass gegeben.\n Der Pass ist %s Tage gültig",
     "notify_wiped": "Dein Fortschritt im Battle Pass wurde vom Admin zurückgesetzt",
     "notify_got_xp": "Du hast %s XP vom Admin erhalten",
-    "notify_got_xp_playing": "Du hast %s XP für das Spielen auf dem Server erhalten"
+    "notify_got_xp_playing": "Du hast %s XP für das Spielen auf dem Server erhalten",
+    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage"
 }
