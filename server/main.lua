@@ -172,9 +172,9 @@ lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
             local item = Config.BattleShop[week][data.index]
 
             if Players[playerId].battlepass.coins >= item.coins then
-                if item.garage then
+                if item.vehicle then
                     local identifier = GetIdentifier(playerId)
-                    local cb = InsertInGarage(item.name, identifier, item.garage, playerId)
+                    local cb = InsertInGarage(item.name, identifier, item.vehicle, playerId)
 
                     if cb then
                         Players[playerId].battlepass.coins -= item.coins
@@ -182,7 +182,7 @@ lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
                         if 0 > Players[playerId].battlepass.coins then
                             Players[playerId].battlepass.coins = 0
                         end
-                    
+
                         return cb, Players[playerId].battlepass.coins, item
                     end
                 else
@@ -235,10 +235,9 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
             if isClaimable and not Players[source].battlepass.FreeClaims[data.index] then
-
-                if item.garage then
+                if item.vehicle then
                     local identifier = GetIdentifier(source)
-                    local cb = InsertInGarage(item.name, identifier, item.garage, source)
+                    local cb = InsertInGarage(item.name, identifier, item.vehicle, source)
 
                     if cb then
                         Players[source].battlepass.FreeClaims[data.index] = true

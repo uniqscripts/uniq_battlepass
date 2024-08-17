@@ -24,14 +24,20 @@ function GeneratePlate()
     end
 end
 
-function InsertInGarage(model, citizenid, garage, playerId)
+function InsertInGarage(model, citizenid, vehicle, playerId)
     local plate = GeneratePlate()
-    local properties = { plate = plate, model = joaat(model) }
     local license = QBCore.Functions.GetPlayer(playerId).PlayerData.license
+
+    if not vehicle.properties then
+        vehicle.properties = {}
+    end
+
+    vehicle.properties.model = model
+    vehicle.properties.plate = plate
 
     local success, err = pcall(function()
         MySQL.insert.await('INSERT INTO `player_vehicles` (license, citizenid, vehicle, hash, mods, plate, garage, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-            { license, citizenid, model, joaat(model), json.encode(properties), plate, garage.garage, garage.state }
+            { license, citizenid, model, joaat(model), json.encode(vehicle.properties), plate, vehicle.garage, vehicle.state }
         )
     end)
 

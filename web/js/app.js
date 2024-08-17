@@ -261,9 +261,9 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
 
     let img;
 
-    if (item.garage && item.img !== '') {
+    if (item.vehicle && item.img !== '') {
         img = item.img;
-    } else if (!item.garage) {
+    } else if (!item.vehicle) {
         img = Config.ImagePath.replace('%s', item.img || item.name);
     } else if (item.img === '') {
         img = `../web/img/${item.name}.png`;
@@ -304,8 +304,8 @@ function ClaimItem(event) {
         pass: button.dataset.passtype
     }).then((cb) => {
         if (cb.resp === true) {
-            if (cb.item.garage) {
-                Notify(locale('ui_notify_claimed_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.garage.garage))
+            if (cb.item.vehicle) {
+                Notify(locale('ui_notify_claimed_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.vehicle.garage))
             } else {
                 Notify(locale('ui_notify_claimed_title'), locale('ui_notify_claimed_desc', cb.item.amount, cb.item.label));
             }
@@ -338,8 +338,8 @@ function HandlePurchase(event) {
         PlayerData.battlepass.coins = cb.coins;
         document.querySelector('.coins-amount-span').textContent = cb.coins;
 
-        if (cb.item.garage) {
-            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.garage.garage))
+        if (cb.item.vehicle) {
+            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.vehicle.garage))
         } else {
             Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label));
         }
@@ -386,9 +386,9 @@ function OpenBattleShop() {
 
             let img;
 
-            if (item.garage && item.img !== '') {
+            if (item.vehicle && item.img !== '') {
                 img = item.img;
-            } else if (!item.garage) {
+            } else if (!item.vehicle) {
                 img = Config.ImagePath.replace('%s', item.img || item.name);
             } else if (item.img === '') {
                 img = `../web/img/${item.name}.png`;

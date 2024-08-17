@@ -23,13 +23,19 @@ function GeneratePlate()
     end
 end
 
-function InsertInGarage(model, identifier, garage, playerId)
+function InsertInGarage(model, identifier, vehicle, playerId)
     local plate = GeneratePlate()
-    local properties = { plate = plate, model = joaat(model) }
+
+    if not vehicle.properties then
+        vehicle.properties = {}
+    end
+
+    vehicle.properties.model = model
+    vehicle.properties.plate = plate
 
     local success, err = pcall(function()
         MySQL.insert.await('INSERT INTO `owned_vehicles` (owner, plate, vehicle, type, stored, parking) VALUES (?, ?, ?, ?, ?, ?)',
-            { identifier, plate, json.encode(properties), garage.type, garage.stored, garage.garage }
+            { identifier, plate, json.encode(vehicle.properties), vehicle.type, vehicle.stored, vehicle.garage }
         )
     end)
 

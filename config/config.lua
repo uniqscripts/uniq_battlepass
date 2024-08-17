@@ -1,15 +1,17 @@
 return {
-    -- image if steam image is not loaded
+    -- Default image to use if the Steam image is not loaded.
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
-    -- When to restart battlepass stats of all players, currently At 00:00 on day-of-month 1, if you server is off at that time, you can use at any time /wipeall command
+    -- The schedule for resetting all players' Battle Pass stats. 
+    -- Currently set to reset at 00:00 on the 1st day of every month.
+    -- If your server is offline at that time, you can manually reset using the /wipeall command.
     Cron = '0 0 1 * *',
 
-
-    -- if player doesn't log for certain time, delete his progress, currently after 2 months of inactivity
+    -- Automatically deletes a player's progress if they haven't logged in for a certain time.
+    -- Currently set to delete progress after 2 months of inactivity.
     DeletePlayer = '2 MONTH',
 
-    -- https://overextended.dev/ox_lib/Modules/String/Shared
+    -- Plate format for vehicles. Check the documentation at https://overextended.dev/ox_lib/Modules/String/Shared for more details.
     PlateFormat = '........',
 
     Commands = {
@@ -29,159 +31,144 @@ return {
         },
         givepass = {
             name = 'givepremium',
-            help = 'Gives premium to desired player',
+            help = 'Gives premium pass to a player',
             restricted = 'group.admin'
         },
         wipe = {
             name = 'wipeplayer',
-            help = 'Wipes players battle pass progress (including preium pass status)',
+            help = 'Wipes a player\'s Battle Pass progress (including premium pass status)',
             restricted = 'group.admin'
         },
         givexp = {
             name = 'givexp',
-            help = 'Gives xp to player',
+            help = 'Gives XP to a player',
             restricted = 'group.admin'
         },
         wipeall = {
             name = 'wipeall',
-            help = 'Wiples battlepass progress of all players (online & offline)',
+            help = 'Wipes Battle Pass progress of all players (online & offline)',
             restricted = 'group.admin'
         }
     },
 
-    -- how much each level have xp
+    -- The amount of XP required for next tier.
     XPPerLevel = 1000,
 
-    -- giving xp to player for playing on server
+    -- Reward players with XP for playing on the server.
     PlayTimeReward = {
-        enable = true,  -- if you dont want this then disable
-        interval = 5,   -- in min
-        xp = 250,       -- how much xp player will get,
-        notify = true   -- notify player that he got xp for playing on server
+        enable = true,  -- Set to false if you don't want to enable this feature.
+        interval = 5,   -- Time interval in minutes to give XP.
+        xp = 250,       -- The amount of XP given at each interval.
+        notify = true   -- Notify the player when they receive XP for playing.
     },
 
     Rewards = {
-        FreePass --[[ type of pass ]] = {
-            /*
-                {
-                    name = item_name
-                    label = 'Label of item',
-                    img = '', -- if your image name is something else than item name then put it here otherwise leave it as it is
-                    needXP = 100,
-                    amount = 1000 -- how much you will get
-                },
-            */
-            [1] = { -- 1st week of month
+        FreePass = {
+            [1] = { -- Rewards for the 1st week of the month.
                 { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
-            [2] = { -- 2nd week of month
-                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+            [2] = { -- Rewards for the 2nd week of the month.
                 { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
             },
-            [3] = { -- 3rd week of month
-                -- example for vehicle (will be inserted in owned_vehicles or player_vehicles depending on your framework)
-                -- if you leave img = '' it will take image from web/img, table garage must be configured for your garage
+            [3] = { -- Rewards for the 3rd week of the month.
+            
+                /*
+                    Example for a vehicle reward. The vehicle will be added to the player's owned_vehicles or player_vehicles depending on your framework.
+                    If img is left empty, it will use the image from the web/img folder.
+                    Configure the properties table based on your function for setting vehicle properties. We recommend using lib.setVehicleProperties for more options (like RGB colors).
+                    For QBCore, you can use the following example (example down there is for esx):
+                    vehicle = { garage = 'pillboxgarage', state = 1, drivingdistance = 0, properties = {...} }
+                */
+
                 {
                     name = 'zentorno',
                     label = 'Zentorno',
                     img = 'https://docs.fivem.net/vehicles/zentorno.webp',
-                    requirements = { tier = 10, xp = 150 },
-                    amount = 1, -- this is just for ui, it will always give only 1
-                    garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
-                    -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+                    requirements = { tier = 5, xp = 150 },
+                    amount = 1, -- This is just for the UI; it will always give only 1 vehicle.
+                    vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } } }
                 },
             },
-            [4] = { -- 4th week of month
-                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 10 },
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 3, xp = 150 }, amount = 200 },
+            [4] = { -- Rewards for the 4th week of the month.
+                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 200 },
             },
         },
 
-        -- type of pass
+        -- Rewards for players with a Premium Pass.
         PremiumPass = {
-            [1] = { -- 1st week of month
+            [1] = { -- Rewards for the 1st week of the month.
                 { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
-            [2] = { -- 2nd week of month
+            [2] = { -- Rewards for the 2nd week of the month.
                 { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
-            [3] = { -- 3rd week of month
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
+            [3] = { -- Rewards for the 3rd week of the month.
                 {
                     name = 'zentorno',
                     label = 'Zentorno',
                     img = 'https://docs.fivem.net/vehicles/zentorno.webp',
-                    requirements = { tier = 10, xp = 150 },
-                    amount = 1, -- this is just for ui, it will always give only 1
-                    garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
-                    -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+                    requirements = { tier = 5, xp = 150 },
+                    amount = 1,
+                    vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
                 },
             },
-            [4] = { -- 4th week of month
+            [4] = { -- Rewards for the 4th week of the month.
                 { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
         }
     },
 
     BattleShop = {
-        [1] = { -- week of month
+        [1] = { -- Items available in the shop during the 1st week of the month.
             { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
         },
-        [2] = { -- week of month
+        [2] = { -- Items available in the shop during the 2nd week of the month.
             { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
         },
-        [3] = { -- week of month
-            { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', coins = 50, amount = 10 },
+        [3] = { -- Items available in the shop during the 3rd week of the month.
             {
                 name = 'zentorno',
                 label = 'Zentorno',
                 img = 'https://docs.fivem.net/vehicles/zentorno.webp',
                 coins = 50,
-                amount = 1, -- this is just for ui, it will always give only 1
-                garage = { type = 'car', stored = 1, garage = 'SanAndreasAvenue'}
-                -- qb example garage = { garage = 'pillboxgarage', state = 1, drivingdistance = 0 }
+                amount = 1,
+                vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
             },
 
         },
-        [4] = { -- week of month
+        [4] = { -- Items available in the shop during the 4th week of the month.
             { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
         },
     },
 
     /*
-        The example command to give 100 coins can be found in the file code_example.png.
+        To give 100 coins to a player, use the command example shown in the file code_example.png.
 
-        The order must always be: "command {sid} amount".
+        The command format must always be: "command {sid} amount".
 
-        "Requires Player To Be Online" must be "Only execute command when the player is online" otherwise this won't work
+        The "Requires Player To Be Online" option must be enabled, or this won't work.
 
-        For more details, check tutorial: https://www.youtube.com/watch?v=it-eiJDwV5E
+        For more details, check the tutorial: https://www.youtube.com/watch?v=it-eiJDwV5E
 
-        The CFX account used to purchase coins must be authorized in the FiveM client of the player; otherwise, this won't work; player must be online on server when purchasing.
+        The CFX account used to purchase coins must be authorized in the player's FiveM client. 
+        The player must be online on the server when purchasing.
 
-        We recommend that after creating a new package, you wait a few hours before allowing people to purchase it. 
-        Sometimes it takes over 5 minutes to execute something from a new package, but after a few hours, it executes withing 30 sec
+        After creating a new package, we recommend waiting a few hours before allowing people to purchase it.
+        Sometimes it takes over 5 minutes for a new package to process, but after a few hours, it executes within 30 seconds.
     */
     BuyCoinsCommand = 'purchase_coins_for_battlepass',
 
     /*
-        Same as above, player must be online on server when purchasing & cfx accounts must be same
+        Same requirements as above. The player must be online on the server when purchasing & the CFX account must be the same.
 
-        The order must always be: "command {sid}"
+        The command format must always be: "command {sid}"
     */
 
     BuyPremiumPassCommand = 'buy_premium_pass',
 
     /*
-        How long will premium pass last for player, premium is valid from date to date, currently 30 days.
-        Using os.time which means it will use time from your VPS/dedicated server so make sure time & data are correct
+        Duration of the Premium Pass for players. The pass is valid from the start date to the end date, currently set to 30 days.
+        This uses os.time, meaning it will use the time from your VPS/dedicated server, so ensure the time & date are correct.
     */
     PremiumDuration = 30
 }
