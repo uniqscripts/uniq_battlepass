@@ -186,7 +186,7 @@ lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
                         return cb, Players[playerId].battlepass.coins, item
                     end
                 else
-                    AddItem(playerId, item.name, item.amount)
+                    AddItem(playerId, item.name, item.amount, item.metadata or nil)
                     Players[playerId].battlepass.coins -= item.coins
 
                     if 0 > Players[playerId].battlepass.coins then
@@ -244,7 +244,7 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
                         return cb, Config.Rewards.FreePass[week][data.index]
                     end
                 else
-                    AddItem(source, item.name, item.amount)
+                    AddItem(source, item.name, item.amount, item.metadata or nil)
                     Players[source].battlepass.FreeClaims[data.index] = true
 
                     return true, Config.Rewards.FreePass[week][data.index]
@@ -265,7 +265,7 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
             if isClaimable and not Players[source].battlepass.PremiumClaims[data.index] then
-                AddItem(source, item.name, item.amount)
+                AddItem(source, item.name, item.amount, item.metadata or nil)
                 Players[source].battlepass.PremiumClaims[data.index] = true
 
                 return true, Config.Rewards.PremiumPass[week][data.index]

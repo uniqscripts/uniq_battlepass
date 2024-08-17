@@ -65,7 +65,7 @@ return {
     Rewards = {
         FreePass = {
             [1] = { -- Rewards for the 1st week of the month.
-                { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10 },
+            { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10, metadata = { description = 'This is metadata' } },
             },
             [2] = { -- Rewards for the 2nd week of the month.
                 { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
