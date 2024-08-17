@@ -17,7 +17,7 @@ return {
     Commands = {
         battlepass = {
             name = 'battlepass',
-            help = '',
+            help = 'Open Battlepass Menu',
         },
         givecoins = {
             name = 'givecoins',
@@ -125,6 +125,14 @@ return {
         },
         [3] = { -- Items available in the shop during the 3rd week of the month.
             { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
+            {
+                name = 'zentorno',
+                label = 'Zentorno',
+                img = 'https://docs.fivem.net/vehicles/zentorno.webp',
+                coins = 50,
+                vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
+            },
+
         },
         [4] = { -- Items available in the shop during the 4th week of the month.
             { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
@@ -160,5 +168,9 @@ return {
         Duration of the Premium Pass for players. The pass is valid from the start date to the end date, currently set to 30 days.
         This uses os.time, meaning it will use the time from your VPS/dedicated server, so ensure the time & date are correct.
     */
-    PremiumDuration = 30
+    PremiumDuration = 30,
+
+    Tasks = {
+        
+    }
 }
