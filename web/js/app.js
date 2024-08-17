@@ -265,14 +265,14 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
         img = item.img;
     } else if (!item.vehicle) {
         img = Config.ImagePath.replace('%s', item.img || item.name);
-    } else if (item.img === '') {
+    } else {
         img = `../web/img/${item.name}.png`;
     }
 
     rewardBox.append(
         createImageElement(img),
         createTextElement('h3', 'item-name', item.label),
-        createTextElement('h4', 'item-count', `${item.amount}x`)
+        createTextElement('h4', 'item-count', item.vehicle ? '1x' : `${item.amount}x`)
     );
 
     rewardBoxWrapper.appendChild(rewardBox);
@@ -382,7 +382,7 @@ function OpenBattleShop() {
             itemContainer.className = 'coins-box';
 
             const itemName = createTextElement('h2', 'coins-item-name', item.label);
-            const itemAmount = createTextElement('p', 'coins-item-amount', `${item.amount}x`);
+            const itemAmount = createTextElement('p', 'coins-item-amount', item.vehicle ? '1x' : `${item.amount}x`);
 
             let img;
 
@@ -390,7 +390,7 @@ function OpenBattleShop() {
                 img = item.img;
             } else if (!item.vehicle) {
                 img = Config.ImagePath.replace('%s', item.img || item.name);
-            } else if (item.img === '') {
+            } else {
                 img = `../web/img/${item.name}.png`;
             }
 

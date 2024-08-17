@@ -65,10 +65,10 @@ return {
     Rewards = {
         FreePass = {
             [1] = { -- Rewards for the 1st week of the month.
-            { name = 'water', label = 'Water', img = '', requirements = { tier = 0, xp = 150 }, amount = 10, metadata = { description = 'This is metadata' } },
+                { name = 'water', label = 'Water', requirements = { tier = 0, xp = 150 }, amount = 10, metadata = { description = 'This is metadata' } },
             },
             [2] = { -- Rewards for the 2nd week of the month.
-                { name = 'money', label = 'Money', img = '', requirements = { tier = 1, xp = 150 }, amount = 150 },
+                { name = 'money', label = 'Money', requirements = { tier = 1, xp = 150 }, amount = 150 },
             },
             [3] = { -- Rewards for the 3rd week of the month.
             
@@ -85,22 +85,21 @@ return {
                     label = 'Zentorno',
                     img = 'https://docs.fivem.net/vehicles/zentorno.webp',
                     requirements = { tier = 5, xp = 150 },
-                    amount = 1, -- This is just for the UI; it will always give only 1 vehicle.
                     vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } } }
                 },
             },
             [4] = { -- Rewards for the 4th week of the month.
-                { name = 'ammo-9', label = 'Pistol Ammo', img = '', requirements = { tier = 2, xp = 150 }, amount = 200 },
+                { name = 'ammo-9', label = 'Pistol Ammo', requirements = { tier = 2, xp = 150 }, amount = 200 },
             },
         },
 
         -- Rewards for players with a Premium Pass.
         PremiumPass = {
             [1] = { -- Rewards for the 1st week of the month.
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
             [2] = { -- Rewards for the 2nd week of the month.
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
             [3] = { -- Rewards for the 3rd week of the month.
                 {
@@ -108,36 +107,27 @@ return {
                     label = 'Zentorno',
                     img = 'https://docs.fivem.net/vehicles/zentorno.webp',
                     requirements = { tier = 5, xp = 150 },
-                    amount = 1,
                     vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
                 },
             },
             [4] = { -- Rewards for the 4th week of the month.
-                { name = 'WEAPON_PISTOL', label = 'Pistol', img = '', requirements = { tier = 0, xp = 150 }, amount = 1 },
+                { name = 'WEAPON_PISTOL', label = 'Pistol', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
         }
     },
 
     BattleShop = {
         [1] = { -- Items available in the shop during the 1st week of the month.
-            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
         },
         [2] = { -- Items available in the shop during the 2nd week of the month.
-            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
         },
         [3] = { -- Items available in the shop during the 3rd week of the month.
-            {
-                name = 'zentorno',
-                label = 'Zentorno',
-                img = 'https://docs.fivem.net/vehicles/zentorno.webp',
-                coins = 50,
-                amount = 1,
-                vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
-            },
-
+            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
         },
         [4] = { -- Items available in the shop during the 4th week of the month.
-            { name = 'water', label = 'Water', img = '', coins = 50, amount = 10 },
+            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
         },
     },
 
