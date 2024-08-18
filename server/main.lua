@@ -319,18 +319,6 @@ lib.callback.register('uniq_battlepass:TaskList', function(source)
     end
 end)
 
-RegisterNetEvent('uniq_battlepass:AddInProgress', function(taskName)
-    local src = source
-
-    if Players[src] then
-        if not InProgress[src] then
-            InProgress[src] = {}
-        end
-
-        table.insert(InProgress[src], taskName)
-    end
-end)
-
 
 local function SaveDB()
     local insertTable = {}
