@@ -15,7 +15,8 @@ local defaultStats = {
     premiumClaims = {},
     purchasedate = 0,
     daily = {},
-    weekly = {}
+    weekly = {},
+    playtime = {}
 }
 
 local Query = {
@@ -337,6 +338,11 @@ local function SaveDB()
 
     for playerId, data in pairs(Players) do
         size += 1
+
+        if Config.ResetPlaytime then
+            data.battlepass.playtime = {}
+        end
+
         insertTable[size] = { query = Query.INSERT, values = { data.identifier, json.encode(data.battlepass, { sort_keys = true }) } }
     end
 
@@ -557,14 +563,42 @@ if Config.PlayTimeReward.enable then
             local targetIds = {}
 
             for k, v in pairs(Players) do
-                AddXP(v.id, Config.PlayTimeReward.xp)
+                if Config.PlayTimeReward.xp > 0 then AddXP(v.id, Config.PlayTimeReward.xp) end
 
                 if Config.PlayTimeReward.notify then
                     targetIds[#targetIds + 1] = v.id
                 end
+
+                for taskName, data in pairs(Config.TaskList.Daily) do
+                    if data.repeatTillFinish and not lib.table.contains(v.battlepass.daily, taskName) then
+                        if not v.battlepass.playtime[taskName] then
+                            v.battlepass.playtime[taskName] = 0
+                        end
+
+                        v.battlepass.playtime[taskName] += 1
+
+                        if v.battlepass.playtime[taskName] == data.repeatTillFinish then
+                            FinishTask(v.id, taskName)
+                        end
+                    end
+                end
+
+                for taskName, data in pairs(Config.TaskList.Weekly) do
+                    if data.repeatTillFinish and not lib.table.contains(v.battlepass.weekly, taskName) then
+                        if not v.battlepass.playtime[taskName] then
+                            v.battlepass.playtime[taskName] = 0
+                        end
+
+                        v.battlepass.playtime[taskName] += 1
+
+                        if v.battlepass.playtime[taskName] == data.repeatTillFinish then
+                            FinishTask(v.id, taskName)
+                        end
+                    end
+                end
             end
 
-            if #targetIds > 0 then
+            if #targetIds > 0 and Config.PlayTimeReward.xp > 0 then
                 lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, locale('notify_got_xp_playing', Config.PlayTimeReward.xp), 'inform')
             end
 
@@ -610,6 +644,9 @@ end)
 
 AddEventHandler("esx:playerLogout", function(playerId)
     if Players[playerId] then
+        if Config.ResetPlaytime then
+            Players[playerId].battlepass.playtime = {}
+        end
         MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
         Players[playerId] = nil
     end
@@ -618,6 +655,9 @@ end)
 
 AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
     if Players[playerId] then
+        if Config.ResetPlaytime then
+            Players[playerId].battlepass.playtime = {}
+        end
         MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
         Players[playerId] = nil
     end
@@ -697,9 +737,10 @@ lib.cron.new(Config.WeeklyRestart, function()
     end
 end)
 
-
-
 exports('AddXP', AddXP)
 exports('RemoveXP', RemoveXP)
 exports('FinishTask', FinishTask)
 exports('HasPremium', HasPremium)
+
+
+lib.versionCheck('uniqscripts/uniq_battlepass')

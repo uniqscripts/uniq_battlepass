@@ -54,6 +54,7 @@ return {
     XPPerLevel = 1000,
 
     -- Reward players with XP for playing on the server.
+    -- NOTE: Any task that has "repeatTillFinish" option will go trough this function if its turned on so make sure that you sync task with this
     PlayTimeReward = {
         enable = true,  -- Set to false if you don't want to enable this feature.
         interval = 5,   -- Time interval in minutes to give XP.
@@ -70,7 +71,7 @@ return {
                 { name = 'money', label = 'Money', requirements = { tier = 1, xp = 150 }, amount = 150 },
             },
             [3] = { -- Rewards for the 3rd week of the month.
-            
+
                 /*
                     Example for a vehicle reward. The vehicle will be added to the player's owned_vehicles or player_vehicles depending on your framework.
                     If img is left empty, it will use the image from the web/img folder.
@@ -184,6 +185,9 @@ return {
         cron = '0 0 1 * *' -- every 1st day of month at 00:00
     },
 
+    -- When player leaves server does play time resets, player played for 59 min, left, came back after few days and finished that 60min play task
+    ResetPlaytime = true,
+
     TaskList = {
         Daily = {
             ['SignIn'] = { -- if you want to keep this dont rename key
@@ -192,10 +196,11 @@ return {
                 xp = 300,
             },
 
-            ['Play60'] = {
+            ['Play60'] = { -- dont name daily and weekly tasks table key same
                 title = 'Play 60min',
                 description = 'Play for 60 min on server <br> Reward: 600XP', -- supports HTML elements
                 xp = 600,
+                repeatTillFinish = 12 -- how many times interval needs to repeat to finish this (Your desired time / PlayTimeReward.interval | 60 / 5 = 12)
             }
         },
 
@@ -204,6 +209,7 @@ return {
                 title = 'Play 120min',
                 description = 'Play for 120 min on server <br> Reward: 1200XP', -- supports HTML elements
                 xp = 1200,
+                repeatTillFinish = 24
             }
         }
     }
