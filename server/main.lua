@@ -524,13 +524,33 @@ lib.addCommand(Config.Commands.givexp.name, {
         {
             name = 'count',
             type = 'number',
-            help = 'Amount of the xp',
+            help = 'Amount of the xp to give',
         },
     },
     restricted = Config.Commands.givexp.restricted
 }, function(source, args, raw)
     AddXP(args.target, args.count)
     TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_got_xp', args.count), 'inform')
+end)
+
+
+lib.addCommand(Config.Commands.removexp.name, {
+    help = Config.Commands.removexp.help,
+    params = {
+        {
+            name = 'target',
+            type = 'playerId',
+            help = 'Target player\'s server id',
+        },
+        {
+            name = 'count',
+            type = 'number',
+            help = 'Amount of the xp to remove',
+        },
+    },
+    restricted = Config.Commands.removexp.restricted
+}, function(source, args, raw)
+    RemoveXP(args.target, args.count or 0)
 end)
 
 local function WipeAll()
