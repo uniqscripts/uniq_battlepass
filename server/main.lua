@@ -652,11 +652,49 @@ if Config.MonthlyRestart.enabled then
 end
 
 lib.cron.new(Config.DailyReset, function()
-    SaveDB()
+    for k,v in pairs(Players) do
+        v.battlepass.daily = {}
+    end
+
+    local query = MySQL.query.await('SELECT * FROM `uniq_battlepass`')
+
+    if query[1] then
+        local insertTable = {}
+
+        for k, v in pairs(query) do
+            v.battlepass = json.decode(v.battlepass)
+            v.battlepass.daily = {}
+
+            insertTable[#insertTable + 1] = { query = Query.INSERT, values = { v.owner, json.encode(v.battlepass, { sort_keys = true }) } }
+        end
+
+        local success, response = pcall(MySQL.transaction, insertTable)
+
+        if not success then print(response) end
+    end
 end)
 
 lib.cron.new(Config.WeeklyRestart, function()
-    SaveDB()
+    for k,v in pairs(Players) do
+        v.battlepass.weekly = {}
+    end
+
+    local query = MySQL.query.await('SELECT * FROM `uniq_battlepass`')
+
+    if query[1] then
+        local insertTable = {}
+
+        for k, v in pairs(query) do
+            v.battlepass = json.decode(v.battlepass)
+            v.battlepass.weekly = {}
+
+            insertTable[#insertTable + 1] = { query = Query.INSERT, values = { v.owner, json.encode(v.battlepass, { sort_keys = true }) } }
+        end
+
+        local success, response = pcall(MySQL.transaction, insertTable)
+
+        if not success then print(response) end
+    end
 end)
 
 
