@@ -26,6 +26,7 @@ server_scripts {
 client_scripts {
 	'bridge/esx/client.lua',
 	'bridge/qb/client.lua',
+	'config/tasks.lua',
 	'client/*.lua'
 }
 

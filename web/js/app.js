@@ -45,6 +45,31 @@ const locale = (str, ...args) => {
 
 
 document.addEventListener('DOMContentLoaded', () => {
+    const dailyTasksBtn = document.getElementById('selected-task-btn');
+    const weeklyTasksBtn = document.querySelector('.task-btn:nth-child(2)');
+    const dailyTasksContainer = document.getElementById('daily-tasks');
+    const weeklyTasksContainer = document.getElementById('weekly-tasks');
+
+    dailyTasksBtn.addEventListener('click', function() {
+        dailyTasksBtn.classList.add('selected');
+        dailyTasksBtn.id = 'selected-task-btn';
+        weeklyTasksBtn.classList.remove('selected');
+        weeklyTasksBtn.removeAttribute('id'); 
+        
+        dailyTasksContainer.style.display = 'block';
+        weeklyTasksContainer.style.display = 'none';
+    });
+
+    weeklyTasksBtn.addEventListener('click', function() {
+        dailyTasksBtn.classList.remove('selected');
+        dailyTasksBtn.removeAttribute('id'); 
+        weeklyTasksBtn.classList.add('selected');
+        weeklyTasksBtn.id = 'selected-task-btn'; 
+        
+        dailyTasksContainer.style.display = 'none';
+        weeklyTasksContainer.style.display = 'block';
+    });
+
     window.addEventListener('message', ({ data }) => {
         if (data.enable) {
             PlayerData = data.PlayerData;
@@ -55,6 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             CreateFreePass(data.FreeItems);
             CreatePremiumPass(data.PaidItems);
             CalculateTier()
+            LoadTasks()
             document.body.style.display = 'block';
 
             if (PlayerData.battlepass.premium === true) {
@@ -91,6 +117,69 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+function LoadTasks() {
+    NUICallBack('GetTasks', {}).then((tasks) => {
+        const daily = document.getElementById('daily-tasks');
+        daily.innerHTML = '';
+
+        for (let i = 0; i < tasks.day.length; i++) {
+            const task = tasks.day[i];
+
+            const taskBox = document.createElement('div');
+            taskBox.className = 'task-box';
+            taskBox.id = task.done === true ? 'completed-task-box' : 'uncompleted-task-box';
+
+            const taskHeading = document.createElement('h2');
+            taskHeading.className = 'task-nr-h2';
+            taskHeading.textContent = task.title;
+            taskBox.appendChild(taskHeading);
+
+            const taskStatus = document.createElement('h3');
+            taskStatus.className = 'task-status';
+            taskStatus.id = task.done === true ? 'task-completed' : 'task-uncompleted';
+            taskStatus.textContent = task.done === true ? locale('ui_completed') : locale('ui_uncompleted');
+            taskBox.appendChild(taskStatus);
+
+            const taskDetails = document.createElement('p');
+            taskDetails.className = 'task-details';
+            taskDetails.innerHTML = task.desc;
+            taskBox.appendChild(taskDetails);
+
+            daily.appendChild(taskBox);
+        }
+
+        const weekly = document.getElementById('weekly-tasks');
+        weekly.innerHTML = '';
+
+        for (let i = 0; i < tasks.week.length; i++) {
+            const task = tasks.week[i];
+
+            const taskBox = document.createElement('div');
+            taskBox.className = 'task-box';
+            taskBox.id = task.done === true ? 'completed-task-box' : 'uncompleted-task-box';
+
+            const taskHeading = document.createElement('h2');
+            taskHeading.className = 'task-nr-h2';
+            taskHeading.textContent = task.title;
+            taskBox.appendChild(taskHeading);
+
+            const taskStatus = document.createElement('h3');
+            taskStatus.className = 'task-status';
+            taskStatus.id = task.done === true ? 'task-completed' : 'task-uncompleted';
+            taskStatus.textContent = task.done === true ? locale('ui_completed') : locale('ui_uncompleted');
+            taskBox.appendChild(taskStatus);
+
+            const taskDetails = document.createElement('p');
+            taskDetails.className = 'task-details';
+            taskDetails.innerHTML = task.desc;
+            taskBox.appendChild(taskDetails);
+
+            weekly.appendChild(taskBox);
+        }
+    });
+}
 
 
 function Localize() {
@@ -223,7 +312,7 @@ function createRewardBox(item, key, currentXP, currentTier, type) {
     overlay.className = type === 'free' ? 'overlay' : 'overlay-premium';
 
     let xpLabel;
-    const hasClaimed = type === 'free' ? PlayerData.battlepass.FreeClaims[key] : PlayerData.battlepass.PremiumClaims[key];
+    const hasClaimed = type === 'free' ? PlayerData.battlepass.freeClaims[key] : PlayerData.battlepass.premiumClaims[key];
 
     const isTierMet = currentTier >= item.requirements.tier;
     const isXPMet = currentXP >= item.requirements.xp;

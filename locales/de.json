@@ -55,5 +55,8 @@
     "notify_wiped": "Dein Fortschritt im Battle Pass wurde vom Admin zurückgesetzt",
     "notify_got_xp": "Du hast %s XP vom Admin erhalten",
     "notify_got_xp_playing": "Du hast %s XP für das Spielen auf dem Server erhalten",
-    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage"
+    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage",
+    "ui_start": "Start",
+    "ui_completed": "COMPLETED",
+    "ui_uncompleted": "UNCOMPLETED"
 }

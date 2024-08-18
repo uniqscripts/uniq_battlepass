@@ -2,11 +2,6 @@ return {
     -- Default image to use if the Steam image is not loaded.
     DefaultImage = 'https://avatars.steamstatic.com/b5bd56c1aa4644a474a2e4972be27ef9e82e517e_full.jpg',
 
-    -- The schedule for resetting all players' Battle Pass stats. 
-    -- Currently set to reset at 00:00 on the 1st day of every month.
-    -- If your server is offline at that time, you can manually reset using the /wipeall command.
-    Cron = '0 0 1 * *',
-
     -- Automatically deletes a player's progress if they haven't logged in for a certain time.
     -- Currently set to delete progress after 2 months of inactivity.
     DeletePlayer = '2 MONTH',
@@ -170,7 +165,42 @@ return {
     */
     PremiumDuration = 30,
 
-    Tasks = {
-        
+    -- when to restart daily tasks, currently ever day at 00, https://crontab.guru/
+    DailyReset = '0 0 * * *',
+
+    -- when to restart daily tasks, currently ever monday at 00
+    WeeklyRestart = '0 0 * * 1',
+
+
+    -- The schedule for resetting all players' Battle Pass stats. 
+    -- Currently set to reset at 00:00 on the 1st day of every month.
+    -- If your server is offline at that time, you can manually reset using the /wipeall command.
+    MonthlyRestart = {
+        enabled = true,
+        cron = '0 0 1 * *' -- every 1st day of month at 00:00
+    },
+
+    TaskList = {
+        Daily = {
+            ['SignIn'] = {
+                title = 'Sign In',
+                description = 'Sign in and receive 300XP',
+                xp = 300,
+            },
+
+            ['Play60'] = {
+                title = 'Play 60min',
+                description = 'Play for 60 min on server <br> Reward: 600XP', -- supports HTML elements
+                xp = 600,
+            }
+        },
+
+        Weekly = {
+            ['Play120'] = {
+                title = 'Play 120min',
+                description = 'Play for 120 min on server <br> Reward: 1200XP', -- supports HTML elements
+                xp = 1200,
+            }
+        }
     }
 }

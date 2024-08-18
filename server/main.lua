@@ -1,11 +1,22 @@
 ---@diagnostic disable: param-type-mismatch
 if not lib then return end
-local Players = {}
+lib.locale()
+local Players, InProgress = {}, {}, {}
 local steamAPI = GetConvar('steam_webApiKey', '')
 local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
 local DaysToSec = (Config.PremiumDuration * 24 * 60 * 60)
-lib.locale()
+local defaultStats = {
+    coins = 0,
+    xp = 0,
+    tier = 0,
+    premium = false,
+    freeClaims = {},
+    premiumClaims = {},
+    purchasedate = 0,
+    daily = {},
+    weekly = {}
+}
 
 local Query = {
     INSERT = 'INSERT INTO `uniq_battlepass` (owner, battlepass) VALUES (?, ?) ON DUPLICATE KEY UPDATE battlepass = VALUES(battlepass)'
@@ -49,15 +60,7 @@ local function CreatePlayer(playerId, bp)
         name = GetPlayerName(playerId),
         identifier = GetIdentifier(playerId),
         avatar = GetAvatar(playerId),
-        battlepass = (bp == nil or type(bp) == 'empty') and {
-            coins = 0,
-            xp = 0,
-            tier = 0,
-            premium = false,
-            FreeClaims = {},
-            PremiumClaims = {},
-            purchasedate = 0
-        } or bp
+        battlepass = (bp == nil or type(bp) == 'empty') and lib.table.deepclone(defaultStats) or bp
     }
 
     Players[playerId] = self
@@ -148,7 +151,7 @@ lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(sourc
             tier = v.battlepass.tier,
             xp = v.battlepass.xp,
             premium = v.battlepass.premium,
-            taskdone = 0,
+            taskdone = #v.daily + #v.weekly,
             avatar = v.avatar
         }
     end
@@ -234,18 +237,18 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isXPMet = currentXP >= requiredXP
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if isClaimable and not Players[source].battlepass.FreeClaims[data.index] then
+            if isClaimable and not Players[source].battlepass.freeClaims[data.index] then
                 if item.vehicle then
                     local identifier = GetIdentifier(source)
                     local cb = InsertInGarage(item.name, identifier, item.vehicle, source)
 
                     if cb then
-                        Players[source].battlepass.FreeClaims[data.index] = true
+                        Players[source].battlepass.freeClaims[data.index] = true
                         return cb, Config.Rewards.FreePass[week][data.index]
                     end
                 else
                     AddItem(source, item.name, item.amount, item.metadata or nil)
-                    Players[source].battlepass.FreeClaims[data.index] = true
+                    Players[source].battlepass.freeClaims[data.index] = true
 
                     return true, Config.Rewards.FreePass[week][data.index]
                 end
@@ -264,9 +267,9 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
             local isXPMet = currentXP >= requiredXP
             local isClaimable = isTierMet and (isXPMet or currentTier > requiredTier)
 
-            if isClaimable and not Players[source].battlepass.PremiumClaims[data.index] then
+            if isClaimable and not Players[source].battlepass.premiumClaims[data.index] then
                 AddItem(source, item.name, item.amount, item.metadata or nil)
-                Players[source].battlepass.PremiumClaims[data.index] = true
+                Players[source].battlepass.premiumClaims[data.index] = true
 
                 return true, Config.Rewards.PremiumPass[week][data.index]
             end
@@ -275,6 +278,25 @@ lib.callback.register('uniq_battlepass:ClaimReward', function(source, data)
 
     return false, nil
 end)
+
+lib.callback.register('uniq_battlepass:TaskList', function(source)
+    if Players[source] then
+        return Players[source].battlepass.daily, Players[source].battlepass.weekly
+    end
+end)
+
+RegisterNetEvent('uniq_battlepass:AddInProgress', function(taskName)
+    local src = source
+
+    if Players[src] then
+        if not InProgress[src] then
+            InProgress[src] = {}
+        end
+
+        table.insert(InProgress[src], taskName)
+    end
+end)
+
 
 local function SaveDB()
     local insertTable = {}
@@ -416,7 +438,7 @@ lib.addCommand(Config.Commands.wipe.name, {
     restricted = Config.Commands.wipe.restricted
 }, function(source, args, raw)
     if Players[args.target] then
-        Players[args.target].battlepass = { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
+        Players[args.target].battlepass = lib.table.deepclone(defaultStats)
 
         TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_wiped'), 'warning')
     end
@@ -449,14 +471,14 @@ local function WipeAll()
     for k, v in pairs(Players) do
         targetIds[#targetIds + 1] = v.id
 
-        v.battlepass = { coins = 0, xp = 0, tier = 0, premium = false, FreeClaims = {}, PremiumClaims = {}, purchasedate = 0 }
+        v.battlepass = lib.table.deepclone(defaultStats)
     end
 
     if #targetIds > 0 then
         lib.triggerClientEvent('uniq_battlepass:Notify', targetIds, locale('notify_wiped'), 'inform')
     end
 
-    MySQL.query('DELETE FROM uniq_battlepass')
+    MySQL.query('DELETE FROM `uniq_battlepass`')
 end
 
 lib.addCommand(Config.Commands.wipeall.name, {
@@ -545,6 +567,16 @@ lib.cron.new('*/5 * * * *', function()
     SaveDB()
 end)
 
-lib.cron.new(Config.Cron, function ()
-    WipeAll()
+if Config.MonthlyRestart.enabled then
+    lib.cron.new(Config.MonthlyRestart.cron, function ()
+        WipeAll()
+    end)
+end
+
+lib.cron.new(Config.DailyReset, function()
+    SaveDB()
+end)
+
+lib.cron.new(Config.WeeklyRestart, function()
+    SaveDB()
 end)

@@ -37,16 +37,16 @@
             <div class="container-wrapper container-wrapper-1">
                 <div class="container-left-side">
                     <div class="tasks-btns-wrapper">
-                        <span id="selected-task-btn" class="task-btn">Tasks</span>
-                    
+                        <button id="selected-task-btn" class="task-btn">Daily Tasks</button>
+                        <button class="task-btn">Weekly Tasks</button>
                     </div>
 
                     <div class="task-boxes-inner-wrapper">
                         <div id="daily-tasks" class="task-boxes-wrapper">
-                            <div id="completed-task-box" class="task-box">
-                                <h2 class="task-nr-h2">Task #1</h2>
-                                <p class="task-details">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et</p>
-                            </div>
+                            
+                        </div>
+                        <div id="weekly-tasks" class="task-boxes-wrapper">
+                            
                         </div>
                     </div>
                 </div>
@@ -327,20 +327,4 @@
         });
     });
 </script>
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const dailyTasksBtn = document.getElementById('selected-task-btn');
-        const dailyTasksContainer = document.getElementById('daily-tasks');
-        const weeklyTasksContainer = document.getElementById('weekly-tasks');
-
-        dailyTasksBtn.addEventListener('click', function() {
-            dailyTasksBtn.classList.add('selected');
-            dailyTasksBtn.id = 'selected-task-btn';
-            dailyTasksContainer.style.display = 'block';
-        });
-    });
-</script>
-
 </html>

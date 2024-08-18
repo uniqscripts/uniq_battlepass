@@ -3,6 +3,7 @@ local FreeItems = lib.load('config.config').Rewards.FreePass
 local PaidItems = lib.load('config.config').Rewards.PremiumPass
 local BattleShop = lib.load('config.config').BattleShop
 local XPPerLevel = lib.load('config.config').XPPerLevel
+local TaskList = lib.load('config.config').TaskList
 local UI = false
 
 
@@ -65,4 +66,20 @@ RegisterNUICallback('ReedemCode', function(data, cb)
     local resp = lib.callback.await('uniq_battlepass:ReedemCode', 100, data.code)
 
     cb(resp)
+end)
+
+
+RegisterNUICallback('GetTasks', function (data, cb)
+    local daily, weekly = lib.callback.await('uniq_battlepass:TaskList', 100)
+    local day, week = {}, {}
+
+    for k, v in pairs(TaskList.Daily) do
+        day[#day + 1] = { title = v.title, xp = v.xp, desc = v.description, done = daily[k] and true or false }
+    end
+
+    for k, v in pairs(TaskList.Weekly) do
+        week[#week + 1] = { title = v.title, xp = v.xp, desc = v.description, done = weekly[k] and true or false }
+    end
+
+    cb({ day = day, week = week })
 end)

@@ -149,7 +149,7 @@ button:hover {
 
 .tasks-btns-wrapper {
     border-radius: 100.8vh;
-    background: transparent;
+    background: rgba(53, 185, 193, 0.10);
     display: flex;
     justify-content: space-between;
     margin-bottom: 5.1142vh;
@@ -162,24 +162,23 @@ button:hover {
     font-style: normal;
     font-weight: 400;
     line-height: normal;
-    background: linear-gradient(90deg, rgba(53, 185, 193, 0.19) 0.01%, rgba(25, 87, 91, 0.69) 100%);
+    background-color: transparent;
     border: 0;
     padding: 1vh 1vw;
     border-radius: 100.8vh;
     border: 0.1088vh solid transparent;
-    text-align: center;
     width: 49%;
 }
 
-/* .task-btn:hover {
+.task-btn:hover {
     border: 0.1088vh solid #35bac162;
     background: linear-gradient(90deg, rgba(53, 186, 193, 0.059) 0.01%, rgba(25, 87, 91, 0.39) 100%);
-} */
+}
 
-/* #selected-task-btn {
+#selected-task-btn {
     border: 0.1088vh solid #35B9C1;
     background: linear-gradient(90deg, rgba(53, 185, 193, 0.19) 0.01%, rgba(25, 87, 91, 0.69) 100%);
-} */
+}
 
 .task-nr-h2 {
     color: #FFF;
@@ -954,10 +953,10 @@ button:hover {
 
 .container-wrapper {
     display: none;
-  }
-  .container-wrapper-1 {
+}
+.container-wrapper-1 {
     display: grid;
-  }
+}
 
 @media (max-width: 850px) {
     .reward-box {

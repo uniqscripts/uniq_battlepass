@@ -55,5 +55,8 @@
     "notify_wiped": "Twój postęp w przepustce bojowej został wyczyszczony przez administratora",
     "notify_got_xp": "Otrzymałeś %s XP od administratora",
     "notify_got_xp_playing": "Otrzymałeś %s XP za grę na serwerze",
-    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage"
+    "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage",
+    "ui_start": "Start",
+    "ui_completed": "COMPLETED",
+    "ui_uncompleted": "UNCOMPLETED"
 }
