@@ -1,11 +1,11 @@
 ---@diagnostic disable: param-type-mismatch
 if not lib then return end
 lib.locale()
-local Players, InProgress = {}, {}, {}
+local Players, InProgress = {}, {}
 local steamAPI = GetConvar('steam_webApiKey', '')
 local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
-local DaysToSec = (Config.PremiumDuration * 24 * 60 * 60)
+local DaysToSec = Config.PremiumDuration * 86400
 local defaultStats = {
     coins = 0,
     xp = 0,
@@ -48,24 +48,6 @@ local function GetAvatar(playerId)
     return Citizen.Await(p)
 end
 
-local function CreatePlayer(playerId, bp)
-    if bp and table.type(bp) ~= 'empty' then
-        if tonumber(bp.purchasedate) < (os.time() - DaysToSec) then
-            bp.premium = false
-        end
-    end
-
-    local self = {
-        id = playerId,
-        name = GetPlayerName(playerId),
-        identifier = GetIdentifier(playerId),
-        avatar = GetAvatar(playerId),
-        battlepass = (bp == nil or type(bp) == 'empty') and lib.table.deepclone(defaultStats) or bp
-    }
-
-    Players[playerId] = self
-end
-
 local function AddXP(playerId, xp)
     xp = tonumber(xp)
     if Players[playerId] then
@@ -90,9 +72,60 @@ local function RemoveXP(playerId, xp)
     end
 end
 
-exports('AddXP', AddXP)
-exports('RemoveXP', RemoveXP)
+local function FinishTask(playerId, task)
+    if Players[playerId] then
+        local daytask = Config.TaskList.Daily[task]
 
+        if daytask then
+            if not lib.table.contains(Players[playerId].battlepass.daily, task) then
+                table.insert(Players[playerId].battlepass.daily, task)
+                AddXP(playerId, daytask.xp or 0)
+                TriggerClientEvent('uniq_battlepass:Notify', playerId, locale('notify_finished_task', daytask.title, daytask.xp or 0))
+                return true
+            end
+        end
+
+        local weektask = Config.TaskList.Weekly[task]
+
+        if weektask then
+            if not lib.table.contains(Players[playerId].battlepass.weekly, task) then
+                table.insert(Players[playerId].battlepass.weekly, task)
+                AddXP(playerId, weektask.xp or 0)
+                TriggerClientEvent('uniq_battlepass:Notify', playerId, locale('notify_finished_task', weektask.title, weektask.xp or 0))
+                return true
+            end
+        end
+    end
+
+    return false
+end
+
+local function HasPremium(playerId)
+    if Players[playerId] then
+        return Players[playerId].battlepass.premium
+    end
+
+    return false
+end
+
+
+local function CreatePlayer(playerId, bp)
+    if bp and table.type(bp) ~= 'empty' then
+        if tonumber(bp.purchasedate) < (os.time() - DaysToSec) then
+            bp.premium = false
+        end
+    end
+
+    local self = {
+        id = playerId,
+        name = GetPlayerName(playerId),
+        identifier = GetIdentifier(playerId),
+        avatar = GetAvatar(playerId),
+        battlepass = (bp == nil or type(bp) == 'empty') and lib.table.deepclone(defaultStats) or bp
+    }
+
+    Players[playerId] = self
+end
 
 MySQL.ready(function()
     local success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass`')
@@ -151,7 +184,7 @@ lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(sourc
             tier = v.battlepass.tier,
             xp = v.battlepass.xp,
             premium = v.battlepass.premium,
-            taskdone = #v.daily + #v.weekly,
+            taskdone = #v.battlepass.daily + #v.battlepass.weekly,
             avatar = v.avatar
         }
     end
@@ -347,6 +380,35 @@ RegisterCommand(Config.BuyPremiumPassCommand, function(source, args, raw)
     end
 end)
 
+
+function SecondsToClock(seconds)
+    local days = math.floor(seconds / 86400)
+    local hours = math.floor((seconds % 86400) / 3600)
+    local mins = math.floor((seconds % 3600) / 60)
+    local secs = math.floor(seconds % 60)
+
+    return locale('time', days, hours, mins, secs)
+end
+
+lib.addCommand(Config.Commands.premiumDuration.name, {
+    help = Config.Commands.premiumDuration.help,
+}, function(source, args, raw)
+    if Players[source] then
+        if Players[source].battlepass.premium == false then
+            return TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_premium'), 'warning')
+        end
+
+        local purchaseDate = Players[source].battlepass.purchasedate
+        local currentTime = os.time()
+
+        local expirationTime = purchaseDate + DaysToSec
+        local timeLeft = expirationTime - currentTime
+
+        local time = SecondsToClock(timeLeft)
+        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_expiress', time), 'inform')
+    end
+end)
+
 lib.addCommand(Config.Commands.givecoins.name, {
     help = Config.Commands.givecoins.help,
     params = {
@@ -517,6 +579,14 @@ AddEventHandler("esx:playerLoaded", function(playerId, xPlayer)
         local battlepass = MySQL.prepare.await('SELECT `battlepass` FROM `uniq_battlepass` WHERE `owner` = ?', { xPlayer.identifier })
 
         CreatePlayer(playerId, battlepass and json.decode(battlepass))
+
+        Wait(750)
+
+        if Config.TaskList.Daily['SignIn'] then
+            if not Players[playerId].battlepass.daily['SignIn'] then
+                FinishTask(playerId, 'SignIn')
+            end
+        end
     end
 end)
 
@@ -526,6 +596,14 @@ AddEventHandler('QBCore:Server:PlayerLoaded', function(Player)
         local battlepass = MySQL.prepare.await('SELECT `battlepass` FROM `uniq_battlepass` WHERE `owner` = ?', { Player.PlayerData.citizenid })
 
         CreatePlayer(Player.PlayerData.source, battlepass and json.decode(battlepass))
+
+        Wait(750)
+
+        if Config.TaskList.Daily['SignIn'] then
+            if not Players[Player.PlayerData.source].battlepass.daily['SignIn'] then
+                FinishTask(Player.PlayerData.source, 'SignIn')
+            end
+        end
     end
 end)
 
@@ -580,3 +658,10 @@ end)
 lib.cron.new(Config.WeeklyRestart, function()
     SaveDB()
 end)
+
+
+
+exports('AddXP', AddXP)
+exports('RemoveXP', RemoveXP)
+exports('FinishTask', FinishTask)
+exports('HasPremium', HasPremium)

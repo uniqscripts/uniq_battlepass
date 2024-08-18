@@ -43,6 +43,10 @@ return {
             name = 'wipeall',
             help = 'Wipes Battle Pass progress of all players (online & offline)',
             restricted = 'group.admin'
+        },
+        premiumDuration = {
+            name = 'checkpremium',
+            help = 'Shows you how long your battlepass will last'
         }
     },
 
@@ -182,7 +186,7 @@ return {
 
     TaskList = {
         Daily = {
-            ['SignIn'] = {
+            ['SignIn'] = { -- if you want to keep this dont rename key
                 title = 'Sign In',
                 description = 'Sign in and receive 300XP',
                 xp = 300,

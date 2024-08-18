@@ -73,12 +73,12 @@ RegisterNUICallback('GetTasks', function (data, cb)
     local daily, weekly = lib.callback.await('uniq_battlepass:TaskList', 100)
     local day, week = {}, {}
 
-    for k, v in pairs(TaskList.Daily) do
-        day[#day + 1] = { title = v.title, xp = v.xp, desc = v.description, done = daily[k] and true or false }
+    for taskName, v in pairs(TaskList.Daily) do
+        day[#day + 1] = { title = v.title, xp = v.xp, desc = v.description, done = lib.table.contains(daily, taskName) and true or false }
     end
 
-    for k, v in pairs(TaskList.Weekly) do
-        week[#week + 1] = { title = v.title, xp = v.xp, desc = v.description, done = weekly[k] and true or false }
+    for taskName, v in pairs(TaskList.Weekly) do
+        week[#week + 1] = { title = v.title, xp = v.xp, desc = v.description, done = lib.table.contains(weekly, taskName) and true or false }
     end
 
     cb({ day = day, week = week })

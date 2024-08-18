@@ -55,8 +55,12 @@
     "notify_wiped": "Dein Fortschritt im Battle Pass wurde vom Admin zurückgesetzt",
     "notify_got_xp": "Du hast %s XP vom Admin erhalten",
     "notify_got_xp_playing": "Du hast %s XP für das Spielen auf dem Server erhalten",
+    "time": "%02d days %02d hours %02d minutes and %02d seconds",
+    "notify_no_premium": "You don't have premium",
+    "notify_expiress": "Your premium will last for %s",
+    "notify_finished_task": "Du hast erfolgreich %s Aufgabe abgeschlossen und %s XP erhalten",
     "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage",
     "ui_start": "Start",
-    "ui_completed": "COMPLETED",
-    "ui_uncompleted": "UNCOMPLETED"
+    "ui_completed": "ABGESCHLOSSEN",
+    "ui_uncompleted": "NICHT ABGESCHLOSSEN"
 }

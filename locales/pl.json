@@ -55,8 +55,12 @@
     "notify_wiped": "Twój postęp w przepustce bojowej został wyczyszczony przez administratora",
     "notify_got_xp": "Otrzymałeś %s XP od administratora",
     "notify_got_xp_playing": "Otrzymałeś %s XP za grę na serwerze",
+    "notify_finished_task": "Ukończyłeś pomyślnie %s zadanie i zdobyłeś %s xp",
+    "time": "%02d days %02d hours %02d minutes and %02d seconds",
+    "notify_no_premium": "You don't have premium",
+    "notify_expiress": "Your premium will last for %s",
     "ui_notify_veh_claimed": "Your ${label} is waiting for you in ${garage} garage",
     "ui_start": "Start",
-    "ui_completed": "COMPLETED",
-    "ui_uncompleted": "UNCOMPLETED"
+    "ui_completed": "ZAKOŃCZONE",
+    "ui_uncompleted": "NIEZAKOŃCZONE"
 }
