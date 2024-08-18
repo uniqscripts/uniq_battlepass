@@ -39,6 +39,11 @@ return {
             help = 'Gives XP to a player',
             restricted = 'group.admin'
         },
+        removexp = {
+            name = 'removexp',
+            help = 'Remove XP from player',
+            restricted = 'group.admin'
+        },
         wipeall = {
             name = 'wipeall',
             help = 'Wipes Battle Pass progress of all players (online & offline)',
