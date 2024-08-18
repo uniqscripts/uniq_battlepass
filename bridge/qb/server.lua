@@ -1,6 +1,6 @@
 if not Framework.qb then return end
 
-local QBCore = exports['qb-core']:GetCoreObject()
+QBCore = exports['qb-core']:GetCoreObject()
 local PlateFormat = lib.load('config.config').PlateFormat
 
 

@@ -18,13 +18,13 @@ elseif qb then
 end
 
 if oxinv then
-    Inv = { ox = true }
+    Inv = { ox = true, exp = exports.ox_inventory }
 elseif qsinv then
-    Inv = { qs = true }
+    Inv = { qs = true, exp = exports['qs-inventory'] }
 elseif qbinv or psinv or ljinv then
     Inv = { qb = true }
 elseif core then
-    Inv = { core = true }
+    Inv = { core = true, exp = exports.core_inventory }
 elseif codem then
     Inv = { codem = true }
 end
