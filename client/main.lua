@@ -4,6 +4,7 @@ local PaidItems = lib.load('config.config').Rewards.PremiumPass
 local BattleShop = lib.load('config.config').BattleShop
 local XPPerLevel = lib.load('config.config').XPPerLevel
 local TaskList = lib.load('config.config').TaskList
+local PremiumPrice = lib.load('config.config').PremiumPrice
 local UI = false
 
 
@@ -23,7 +24,16 @@ RegisterNetEvent('uniq_battlepass:client:OpenMenu', function(data, week)
     if not UI then
         UI = true
         SetNuiFocus(true, true)
-	    SendNUIMessage({enable = true, PlayerData = data, FreeItems = FreeItems[week], PaidItems = PaidItems[week], XPPerLevel = XPPerLevel })
+	    SendNUIMessage(
+            {
+                enable = true,
+                PlayerData = data,
+                FreeItems = FreeItems[week],
+                PaidItems = PaidItems[week],
+                XPPerLevel = XPPerLevel,
+                PremiumPrice = PremiumPrice
+            }
+        )
     end
 end)
 
@@ -49,23 +59,22 @@ end)
 
 
 RegisterNUICallback('OpenBattleShop', function(data, cb)
-    local coins, week = lib.callback.await('uniq_battlepass:GetCoins', 100)
+    local money, week = lib.callback.await('uniq_battlepass:GetCoins', 100)
 
-    cb({ BattleShop = BattleShop[week], coins = coins })
+    cb({ BattleShop = BattleShop[week], money = money })
 end)
 
 
-RegisterNUICallback('BattleShopPurchase', function (data, cb)
-    local resp, coins, item = lib.callback.await('uniq_battlepass:BuyItem', 100, data)
-
-    cb({ resp = resp, coins = coins and coins or nil, item = item and item or nil })
-end)
-
-
-RegisterNUICallback('ReedemCode', function(data, cb)
-    local resp = lib.callback.await('uniq_battlepass:ReedemCode', 100, data.code)
+RegisterNUICallback('BuyPass', function(data, cb)
+    local resp = lib.callback.await('uniq_battlepass:BuyPass', 100)
 
     cb(resp)
+end)
+
+RegisterNUICallback('BattleShopPurchase', function (data, cb)
+    local resp, money, item = lib.callback.await('uniq_battlepass:BuyItem', 100, data)
+
+    cb({ resp = resp, money = money and money or nil, item = item and item or nil })
 end)
 
 

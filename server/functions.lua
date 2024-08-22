@@ -24,3 +24,19 @@ function AddItem(playerId, item, amount, metadata)
         exports['codem-inventory']:AddItem(playerId, item, amount, nil, metadata)
     end
 end
+
+
+function GetItemAmount(playerId, item)
+    if Inv.ox then
+        return Inv.exp:Search(playerId, 'count', item) or 0
+    end
+
+    return 0
+end
+
+
+function RemoveItem(playerId, item, amount)
+    if Inv.ox then
+        Inv.exp:RemoveItem(playerId, item, amount)
+    end
+end

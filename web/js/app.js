@@ -1,6 +1,7 @@
 const resource = GetParentResourceName();
 let PlayerData = {};
 let XPPerLevel = 0;
+let bpprice = 0;
 let dict = {};
 
 (async function loadLocale() {
@@ -74,6 +75,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data.enable) {
             PlayerData = data.PlayerData;
             XPPerLevel = data.XPPerLevel;
+            bpprice = data.PremiumPrice.amount;
 
             Localize();
             LoadAvatar();
@@ -99,7 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const actions = {
         '.unlock-tier-btn': ClaimItem,
         '.coins-purchase': HandlePurchase,
-        '.redeem-btn': RedeemCode,
     };
 
     document.addEventListener('click', (event) => {
@@ -117,6 +118,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+
+function UnlockBattlepass() {
+    NUICallBack('BuyPass', {}).then((resp) => {
+        if (resp === true) {
+            document.querySelector('.unlock-premium-pass-btn').disabled = true;
+            document.querySelector('#claimed-icon-svg').style.display = 'block';
+            Notify(locale('ui_notify_purchased_premium_title'), locale('ui_notify_purchased_premium_desc'))
+        }
+    })
+}
 
 
 function LoadTasks() {
@@ -181,12 +193,19 @@ function LoadTasks() {
     });
 }
 
+function formatNumberWithCommas(number, currencySymbol = '') {
+    let numberString = number.toString();
+    let formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    return currencySymbol + formattedNumber;
+}
+
 
 function Localize() {
-    const setTextContent = (selector, key) => {
+    const setTextContent = (selector, key, value) => {
         const element = document.querySelector(selector);
         if (element) {
-            element.textContent = locale(key);
+            element.textContent = value !== undefined ? locale(key, value) : locale(key);
         }
     };
 
@@ -212,7 +231,7 @@ function Localize() {
     setTextContent('.task-btn', 'ui_tasks');
     setTextContent('.premium-pass-h2', 'ui_premium');
     setTextContent('.premium-pass-span', 'ui_pass');
-    setTextContent('.unlock-premium-pass-btn', 'ui_unlock');
+    setTextContent('.unlock-premium-pass-btn', 'ui_unlock', formatNumberWithCommas(bpprice, locale('$')));
     setInnerHTML('.free-pass-h2', 'ui_freepass');
     setInnerHTML('.exit-p', 'ui_battlepass_menu');
     setTextContentFirst('.coins-amount-h2', 'ui_coins')
@@ -424,13 +443,12 @@ function HandlePurchase(event) {
             return;
         }
 
-        PlayerData.battlepass.coins = cb.coins;
-        document.querySelector('.coins-amount-span').textContent = cb.coins;
+        document.querySelector('.coins-amount-span').textContent = formatNumberWithCommas(cb.money, locale('$'));
 
         if (cb.item.vehicle) {
             Notify(locale('ui_notify_purchase_title'), locale('ui_notify_veh_claimed', cb.item.label, cb.item.vehicle.garage))
         } else {
-            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label));
+            Notify(locale('ui_notify_purchase_title'), locale('ui_notify_purchase_desc', cb.item.amount, cb.item.label, formatNumberWithCommas(cb.item.price, locale('$'))));
         }
 
     });
@@ -458,13 +476,12 @@ function OpenScoreboard() {
     });
 }
 
-
 function OpenBattleShop() {
     NUICallBack('OpenBattleShop', {}).then((response) => {
         const coinsRightSide = document.querySelector('.coins-right-side');
         coinsRightSide.innerHTML = '';
 
-        document.querySelector('.coins-amount-span').textContent = PlayerData.battlepass.coins;
+        document.querySelector('.coins-amount-span').textContent = formatNumberWithCommas(response.money, locale('$'));
 
         Object.entries(response.BattleShop).forEach(([key, item]) => {
             const itemContainer = document.createElement('div');
@@ -490,7 +507,7 @@ function OpenBattleShop() {
             const coinsPriceWrapper = document.createElement('div');
             coinsPriceWrapper.className = 'coins-price-wrapper';
 
-            const coinsPriceH3 = createTextElement('h3', 'coins-price-h3', item.coins);
+            const coinsPriceH3 = createTextElement('h3', 'coins-price-h3', item.price);
 
             coinsPriceWrapper.append(coinSVG(), coinsPriceH3);
 
@@ -575,52 +592,6 @@ async function NUICallBack(endpoint, data = {}) {
     return await response.json();
 }
 
-function RedeemCode() {
-    const inputElement = document.querySelector('.redeem-input');
-    const code = inputElement.value;
-    const button = document.querySelector('.redeem-btn');
-
-    button.disabled = true;
-
-    if (code === '') {
-        Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_empty'));
-        setTimeout(() => {
-            button.disabled = false;
-        }, 3000);
-        return;
-    }
-
-    if (!code.startsWith('tbx-')) {
-        Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_start'));
-        inputElement.value = '';
-        setTimeout(() => {
-            button.disabled = false;
-        }, 3000);
-        return;
-    }
-
-    NUICallBack('ReedemCode', {
-        code: code,
-    }).then((cb) => {
-        if (cb === false) {
-            Notify(locale('ui_notify_invalid_title'), locale('ui_notify_invalid_not'));
-            inputElement.value = '';
-            setTimeout(() => {
-                button.disabled = false;
-            }, 3000);
-            return; 
-        }
-
-        inputElement.value = '';
-        PlayerData.battlepass.coins += Number(cb);
-        document.querySelector('.coins-amount-span').textContent = PlayerData.battlepass.coins;
-        Notify(locale('ui_notify_purchase_title'), locale('ui_notify_added_coins', cb));
-    });
-
-    setTimeout(() => {
-        button.disabled = false;
-    }, 3000);
-}
 function Notify(title, message) {
     const notification = document.createElement('div');
     notification.className = `notification info`;

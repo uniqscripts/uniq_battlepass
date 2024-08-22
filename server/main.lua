@@ -7,7 +7,6 @@ local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
 local DaysToSec = Config.PremiumDuration * 86400
 local defaultStats = {
-    coins = 0,
     xp = 0,
     tier = 0,
     premium = false,
@@ -144,21 +143,6 @@ MySQL.ready(function()
         print('^2Successfully added table uniq_battlepass to database^0')
     end
 
-    success, result = pcall(MySQL.scalar.await, 'SELECT 1 FROM `uniq_battlepass_codes`')
-
-    if not success then
-        MySQL.query([[
-            CREATE TABLE `uniq_battlepass_codes` (
-                `identifier` varchar(72) DEFAULT NULL,
-                `code` varchar(100) DEFAULT NULL,
-                `amount` int(11) DEFAULT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-        ]])
-
-        print('^2Successfully added uniq_battlepass_codes table to SQL^0')
-    end
-
-
     pcall(MySQL.query.await, ('DELETE FROM `uniq_battlepass` WHERE lastupdated < (NOW() - INTERVAL %s)'):format(Config.DeletePlayer))
 
     local players = GetActivePlayers()
@@ -193,9 +177,26 @@ lib.callback.register('uniq_battlepass:server:GetScoreboardData', function(sourc
     return options
 end)
 
+
+lib.callback.register('uniq_battlepass:BuyPass', function(source)
+    if Players[source] then
+        local money = GetItemAmount(source, Config.PremiumPrice.currency)
+
+        if money >= Config.PremiumPrice.amount then
+            Players[source].battlepass.premium = true
+            Players[source].battlepass.purchasedate = os.time()
+            RemoveItem(source, Config.PremiumPrice.currency, Config.PremiumPrice.amount)
+
+            return true
+        end
+    end
+
+    return false
+end)
+
 lib.callback.register('uniq_battlepass:GetCoins', function(source)
     if Players[source] then
-        return Players[source].battlepass.coins, week
+        return GetItemAmount(source, Config.PremiumPrice.currency), week
     end
 
     return 0, week
@@ -207,50 +208,27 @@ lib.callback.register('uniq_battlepass:BuyItem', function(playerId, data)
         data.index = tonumber(data.index)
         if Config.BattleShop[week][data.index] then
             local item = Config.BattleShop[week][data.index]
+            local money = GetItemAmount(playerId, item.currency)
 
-            if Players[playerId].battlepass.coins >= item.coins then
+            if money >= item.price then
+                RemoveItem(playerId, item.currency, item.price)
+                
                 if item.vehicle then
                     local identifier = GetIdentifier(playerId)
                     local cb = InsertInGarage(item.name, identifier, item.vehicle, playerId)
 
                     if cb then
-                        Players[playerId].battlepass.coins -= item.coins
-
-                        if 0 > Players[playerId].battlepass.coins then
-                            Players[playerId].battlepass.coins = 0
-                        end
-
-                        return cb, Players[playerId].battlepass.coins, item
+                        return cb, math.floor(money - item.price), item
                     end
                 else
                     AddItem(playerId, item.name, item.amount, item.metadata or nil)
-                    Players[playerId].battlepass.coins -= item.coins
-
-                    if 0 > Players[playerId].battlepass.coins then
-                        Players[playerId].battlepass.coins = 0
-                    end
-
-                    return true, Players[playerId].battlepass.coins, item
+                    
+                    return true, math.floor(money - item.price), item
                 end
             end
 
             return false
         end
-    end
-
-    return false
-end)
-
-lib.callback.register('uniq_battlepass:ReedemCode', function(source, code)
-    local identifier = GetIdentifier(source)
-    local cb = MySQL.single.await('SELECT `amount`, `identifier` FROM `uniq_battlepass_codes` WHERE `code` = ?', { code })
-
-    if cb and cb.amount and cb.identifier == identifier then
-        cb.amount = tonumber(cb.amount)
-        Players[source].battlepass.coins += cb.amount
-        MySQL.query('DELETE FROM `uniq_battlepass_codes` WHERE `code` = ?', { code })
-
-        return cb.amount
     end
 
     return false
@@ -340,40 +318,6 @@ local function SaveDB()
         if not success then print(response) end
     end
 end
-
-RegisterCommand(Config.BuyCoinsCommand, function (source, args, raw)
-    if source ~= 0 then return end
-
-    local id = tonumber(args[1])
-    local amount = args[2]
-    local code = args[3]
-
-    if not id then return end
-    if not amount then return end
-    if not code then return end
-
-    local identifier = GetIdentifier(id)
-
-    if identifier then
-        MySQL.insert.await('INSERT INTO `uniq_battlepass_codes` (identifier, code, amount) VALUES (?, ?, ?)', { identifier, code, amount })
-        TriggerClientEvent('uniq_battlepass:Notify', id, locale('notify_coins', amount), 'success')
-    end
-end)
-
-RegisterCommand(Config.BuyPremiumPassCommand, function(source, args, raw)
-    if source ~= 0 then return end
-
-    local playerId = tonumber(args[1])
-    if not playerId then return end
-
-    if Players[playerId] then
-        Players[playerId].battlepass.premium = true
-        Players[playerId].battlepass.purchasedate = os.time()
-
-        TriggerClientEvent('uniq_battlepass:Notify', playerId, locale('notify_premium_purchase', Config.PremiumDuration), 'success')
-    end
-end)
-
 
 function SecondsToClock(seconds)
     local days = math.floor(seconds / 86400)

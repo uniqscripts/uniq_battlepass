@@ -123,57 +123,35 @@ return {
 
     BattleShop = {
         [1] = { -- Items available in the shop during the 1st week of the month.
-            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
+            { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
         },
         [2] = { -- Items available in the shop during the 2nd week of the month.
-            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
+            { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
         },
         [3] = { -- Items available in the shop during the 3rd week of the month.
-            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
+            { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
             {
                 name = 'zentorno',
                 label = 'Zentorno',
                 img = 'https://docs.fivem.net/vehicles/zentorno.webp',
-                coins = 50,
+                currency = 'money',
+                price = 50,
                 vehicle = { type = 'car', stored = 1, garage = 'SanAndreasAvenue', properties = { color1 = 0, color2 = 27, neonEnabled = { 1, 2, 3, 4 } }}
             },
 
         },
         [4] = { -- Items available in the shop during the 4th week of the month.
-            { name = 'water', label = 'Water', coins = 50, amount = 10, metadata = { description = 'This is metadata' } },
+            { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
         },
     },
-
-    /*
-        To give 100 coins to a player, use the command example shown in the file code_example.png.
-
-        The command format must always be: "command {sid} amount".
-
-        The "Requires Player To Be Online" option must be enabled, or this won't work.
-
-        For more details, check the tutorial: https://www.youtube.com/watch?v=it-eiJDwV5E
-
-        The CFX account used to purchase coins must be authorized in the player's FiveM client. 
-        The player must be online on the server when purchasing.
-
-        After creating a new package, we recommend waiting a few hours before allowing people to purchase it.
-        Sometimes it takes over 5 minutes for a new package to process, but after a few hours, it executes within 30 seconds.
-    */
-    BuyCoinsCommand = 'purchase_coins_for_battlepass',
-
-    /*
-        Same requirements as above. The player must be online on the server when purchasing & the CFX account must be the same.
-
-        The command format must always be: "command {sid}"
-    */
-
-    BuyPremiumPassCommand = 'buy_premium_pass',
 
     /*
         Duration of the Premium Pass for players. The pass is valid from the start date to the end date, currently set to 30 days.
         This uses os.time, meaning it will use the time from your VPS/dedicated server, so ensure the time & date are correct.
     */
     PremiumDuration = 30,
+
+    PremiumPrice = { currency = 'money', amount = 100000 },
 
     -- when to restart daily tasks, currently ever day at 00, https://crontab.guru/
     DailyReset = '0 0 * * *',
