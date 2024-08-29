@@ -94,7 +94,10 @@ return {
                 },
             },
             [4] = { -- Rewards for the 4th week of the month.
-                { name = 'ammo-9', label = 'Pistol Ammo', requirements = { tier = 2, xp = 150 }, amount = 200 },
+                { name = 'water', label = 'Water', requirements = { tier = 0, xp = 150 }, amount = 10, metadata = { description = 'This is metadata' } },
+            },
+            [5] = { -- Rewards for the 4th week of the month.
+                { name = 'water', label = 'Water', requirements = { tier = 0, xp = 150 }, amount = 10, metadata = { description = 'This is metadata' } },
             },
         },
 
@@ -116,6 +119,9 @@ return {
                 },
             },
             [4] = { -- Rewards for the 4th week of the month.
+                { name = 'WEAPON_PISTOL', label = 'Pistol', requirements = { tier = 0, xp = 150 }, amount = 1 },
+            },
+            [5] = { -- Rewards for the 4th week of the month.
                 { name = 'WEAPON_PISTOL', label = 'Pistol', requirements = { tier = 0, xp = 150 }, amount = 1 },
             },
         }
@@ -141,6 +147,9 @@ return {
 
         },
         [4] = { -- Items available in the shop during the 4th week of the month.
+            { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
+        },
+        [5] = { -- Items available in the shop during the 4th week of the month.
             { name = 'water', label = 'Water', price = 50, currency = 'money', amount = 10, metadata = { description = 'This is metadata' } },
         },
     },
