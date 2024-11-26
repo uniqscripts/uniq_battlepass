@@ -14,16 +14,6 @@ return {
             name = 'battlepass',
             help = 'Open Battlepass Menu',
         },
-        givecoins = {
-            name = 'givecoins',
-            help = 'Gives coins to a player',
-            restricted = 'group.admin'
-        },
-        removecoins = {
-            name = 'removecoins',
-            help = 'Removes coins from a player',
-            restricted = 'group.admin'
-        },
         givepass = {
             name = 'givepremium',
             help = 'Gives premium pass to a player',

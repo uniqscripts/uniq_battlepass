@@ -1,7 +1,7 @@
 ---@diagnostic disable: param-type-mismatch
 if not lib then return end
 lib.locale()
-local Players, InProgress = {}, {}
+local Players = {}
 local steamAPI = GetConvar('steam_webApiKey', '')
 local week = math.ceil(tonumber(os.date("%d")) / 7)
 local Config = lib.load('config.config')
@@ -347,59 +347,6 @@ lib.addCommand(Config.Commands.premiumDuration.name, {
     end
 end)
 
-lib.addCommand(Config.Commands.givecoins.name, {
-    help = Config.Commands.givecoins.help,
-    params = {
-        {
-            name = 'target',
-            type = 'playerId',
-            help = 'Target player\'s server id',
-        },
-        {
-            name = 'count',
-            type = 'number',
-            help = 'Amount of the coints to give',
-        },
-    },
-    restricted = Config.Commands.givecoins.restricted
-}, function(source, args, raw)
-    if Players[args.target] then
-        Players[args.target].battlepass.coins += args.count or 10
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_got_coins', args.count or 10))
-    else
-        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_player'))
-    end
-end)
-
-lib.addCommand(Config.Commands.removecoins.name, {
-    help = Config.Commands.removecoins.help,
-    params = {
-        {
-            name = 'target',
-            type = 'playerId',
-            help = 'Target player\'s server id',
-        },
-        {
-            name = 'count',
-            type = 'number',
-            help = 'Amount of the coints to remove',
-        },
-    },
-    restricted = Config.Commands.removecoins.restricted
-}, function(source, args, raw)
-    if Players[args.target] then
-        Players[args.target].battlepass.coins -= args.count or 10
-
-        if 0 > Players[args.target].battlepass.coins then
-            Players[args.target].battlepass.coins = 0
-        end
-
-        TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_removed_coins', args.count or 10))
-    else
-        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_player'))
-    end
-end)
-
 lib.addCommand(Config.Commands.battlepass.name, {
     help = Config.Commands.battlepass.help,
 }, function(source, args, raw)
@@ -689,10 +636,15 @@ lib.cron.new(Config.WeeklyRestart, function()
     end
 end)
 
+local function OpenBattlepass(playerId)
+    TriggerClientEvent('uniq_battlepass:client:OpenMenu', playerId, Players[playerId], week)
+end
+
 exports('AddXP', AddXP)
 exports('RemoveXP', RemoveXP)
 exports('FinishTask', FinishTask)
 exports('HasPremium', HasPremium)
+exports('OpenBattlepass', OpenBattlepass)
 
 
 lib.versionCheck('uniqscripts/uniq_battlepass')
