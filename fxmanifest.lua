@@ -3,7 +3,7 @@ fx_version 'cerulean'
 use_experimental_fxv2_oal 'yes'
 lua54 'yes'
 game 'gta5'
-version '2.0.1'
+version '2.0.2'
 
 files {
 	'config/config.js',
