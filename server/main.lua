@@ -563,6 +563,19 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
 end)
 
 
+AddEventHandler('playerDropped', function(reason)
+    local playerId = source
+
+    if Players[playerId] then
+        if Config.ResetPlaytime then
+            Players[playerId].battlepass.playtime = {}
+        end
+        MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
+        Players[playerId] = nil
+    end
+end)
+
+
 AddEventHandler('onResourceStop', function(name)
     if cache.resource == name then SaveDB() end
 end)
