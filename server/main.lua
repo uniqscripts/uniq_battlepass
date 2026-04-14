@@ -328,6 +328,11 @@ function SecondsToClock(seconds)
     return locale('time', days, hours, mins, secs)
 end
 
+RegisterNetEvent('uniq_battlepass:openMenu', function()
+    local src = source
+    TriggerClientEvent('uniq_battlepass:client:OpenMenu', src, Players[src], week)
+end)
+
 lib.addCommand(Config.Commands.premiumDuration.name, {
     help = Config.Commands.premiumDuration.help,
 }, function(source, args, raw)
