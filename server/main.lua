@@ -15,7 +15,8 @@ local defaultStats = {
     purchasedate = 0,
     daily = {},
     weekly = {},
-    playtime = {}
+    playtime = {},
+    taskProgress = {}
 }
 
 local Query = {
@@ -98,6 +99,40 @@ local function FinishTask(playerId, task)
     end
 
     return false
+end
+
+local function AddPlaytimeSegments(playerId, segments)
+    if not Players[playerId] then
+        return false
+    end
+
+    segments = math.floor(tonumber(segments) or 1)
+
+    if segments <= 0 then
+        return false
+    end
+
+    local player = Players[playerId]
+    player.battlepass.playtime = player.battlepass.playtime or {}
+    player.battlepass.daily = player.battlepass.daily or {}
+    player.battlepass.weekly = player.battlepass.weekly or {}
+
+    local function applyProgress(taskList, completedTasks)
+        for taskName, data in pairs(taskList) do
+            if data.repeatTillFinish and not lib.table.contains(completedTasks, taskName) then
+                player.battlepass.playtime[taskName] = (player.battlepass.playtime[taskName] or 0) + segments
+
+                if player.battlepass.playtime[taskName] >= data.repeatTillFinish then
+                    FinishTask(playerId, taskName)
+                end
+            end
+        end
+    end
+
+    applyProgress(Config.TaskList.Daily, player.battlepass.daily)
+    applyProgress(Config.TaskList.Weekly, player.battlepass.weekly)
+
+    return true
 end
 
 local function HasPremium(playerId)
@@ -293,8 +328,26 @@ end)
 
 lib.callback.register('uniq_battlepass:TaskList', function(source)
     if Players[source] then
-        return Players[source].battlepass.daily, Players[source].battlepass.weekly
+        local bp = Players[source].battlepass
+        return bp.daily, bp.weekly, bp.playtime or {}, bp.taskProgress or {}
     end
+end)
+
+-- Save task progress from client
+lib.callback.register('dt_battlepass:server:SaveTaskProgress', function(source, progress)
+    if Players[source] and progress then
+        Players[source].battlepass.taskProgress = progress
+        return true
+    end
+    return false
+end)
+
+-- Get task progress for client
+lib.callback.register('dt_battlepass:server:GetTaskProgress', function(source)
+    if Players[source] then
+        return Players[source].battlepass.taskProgress or {}
+    end
+    return {}
 end)
 
 
@@ -305,11 +358,16 @@ local function SaveDB()
     for playerId, data in pairs(Players) do
         size += 1
 
+        local battlepassData = lib.table.deepclone(data.battlepass)
+
         if Config.ResetPlaytime then
-            data.battlepass.playtime = {}
+            battlepassData.playtime = {}
         end
 
-        insertTable[size] = { query = Query.INSERT, values = { data.identifier, json.encode(data.battlepass, { sort_keys = true }) } }
+        insertTable[size] = {
+            query = Query.INSERT,
+            values = { data.identifier, json.encode(battlepassData, { sort_keys = true }) }
+        }
     end
 
     if size > 0 then
@@ -437,6 +495,48 @@ lib.addCommand(Config.Commands.removexp.name, {
     RemoveXP(args.target, args.count or 0)
 end)
 
+lib.addCommand(Config.Commands.addplaytime.name, {
+    help = Config.Commands.addplaytime.help,
+    params = {
+        {
+            name = 'target',
+            type = 'playerId',
+            help = 'Target player\'s server id',
+        },
+        {
+            name = 'segments',
+            type = 'number',
+            help = 'Number of intervals to add (defaults to 1)',
+            optional = true
+        },
+    },
+    restricted = Config.Commands.addplaytime.restricted
+}, function(source, args, raw)
+    local segments = math.floor(tonumber(args.segments) or 1)
+    if segments < 1 then segments = 1 end
+
+    local success = AddPlaytimeSegments(args.target, segments)
+
+    if not success then
+        if source ~= 0 then
+            TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_no_player'), 'error')
+        else
+            print(locale('notify_no_player'))
+        end
+        return
+    end
+
+    local targetName = GetPlayerName(args.target) or args.target
+
+    if source ~= 0 then
+        TriggerClientEvent('uniq_battlepass:Notify', source, locale('notify_playtime_added_admin', segments, targetName), 'inform')
+    else
+        print(locale('notify_playtime_added_admin', segments, targetName))
+    end
+
+    TriggerClientEvent('uniq_battlepass:Notify', args.target, locale('notify_playtime_added', segments), 'inform')
+end)
+
 local function WipeAll()
     local targetIds = {}
 
@@ -472,34 +572,7 @@ if Config.PlayTimeReward.enable then
                 if Config.PlayTimeReward.notify then
                     targetIds[#targetIds + 1] = v.id
                 end
-
-                for taskName, data in pairs(Config.TaskList.Daily) do
-                    if data.repeatTillFinish and not lib.table.contains(v.battlepass.daily, taskName) then
-                        if not v.battlepass.playtime[taskName] then
-                            v.battlepass.playtime[taskName] = 0
-                        end
-
-                        v.battlepass.playtime[taskName] += 1
-
-                        if v.battlepass.playtime[taskName] == data.repeatTillFinish then
-                            FinishTask(v.id, taskName)
-                        end
-                    end
-                end
-
-                for taskName, data in pairs(Config.TaskList.Weekly) do
-                    if data.repeatTillFinish and not lib.table.contains(v.battlepass.weekly, taskName) then
-                        if not v.battlepass.playtime[taskName] then
-                            v.battlepass.playtime[taskName] = 0
-                        end
-
-                        v.battlepass.playtime[taskName] += 1
-
-                        if v.battlepass.playtime[taskName] == data.repeatTillFinish then
-                            FinishTask(v.id, taskName)
-                        end
-                    end
-                end
+                AddPlaytimeSegments(v.id, 1)
             end
 
             if #targetIds > 0 and Config.PlayTimeReward.xp > 0 then
@@ -568,19 +641,6 @@ AddEventHandler('QBCore:Server:OnPlayerUnload', function(playerId)
 end)
 
 
-AddEventHandler('playerDropped', function(reason)
-    local playerId = source
-
-    if Players[playerId] then
-        if Config.ResetPlaytime then
-            Players[playerId].battlepass.playtime = {}
-        end
-        MySQL.insert(Query.INSERT, { Players[playerId].identifier, json.encode(Players[playerId].battlepass, { sort_keys = true }) })
-        Players[playerId] = nil
-    end
-end)
-
-
 AddEventHandler('onResourceStop', function(name)
     if cache.resource == name then SaveDB() end
 end)
@@ -611,6 +671,15 @@ end
 lib.cron.new(Config.DailyReset, function()
     for k,v in pairs(Players) do
         v.battlepass.daily = {}
+        -- Reset daily task progress
+        if v.battlepass.taskProgress then
+            v.battlepass.taskProgress.distanceDriven = nil
+            v.battlepass.taskProgress.itemsUsed = nil
+            v.battlepass.taskProgress.foodEaten = nil
+            v.battlepass.taskProgress.drinksConsumed = nil
+            v.battlepass.taskProgress.vehiclesRepaired = nil
+            v.battlepass.taskProgress.moneySpent = nil
+        end
     end
 
     local query = MySQL.query.await('SELECT * FROM `uniq_battlepass`')
@@ -621,6 +690,15 @@ lib.cron.new(Config.DailyReset, function()
         for k, v in pairs(query) do
             v.battlepass = json.decode(v.battlepass)
             v.battlepass.daily = {}
+            -- Reset daily task progress in database
+            if v.battlepass.taskProgress then
+                v.battlepass.taskProgress.distanceDriven = nil
+                v.battlepass.taskProgress.itemsUsed = nil
+                v.battlepass.taskProgress.foodEaten = nil
+                v.battlepass.taskProgress.drinksConsumed = nil
+                v.battlepass.taskProgress.vehiclesRepaired = nil
+                v.battlepass.taskProgress.moneySpent = nil
+            end
 
             insertTable[#insertTable + 1] = { query = Query.INSERT, values = { v.owner, json.encode(v.battlepass, { sort_keys = true }) } }
         end
@@ -629,13 +707,23 @@ lib.cron.new(Config.DailyReset, function()
 
         if not success then print(response) end
     end
+    
+    -- Reset daily task counters on all clients
+    TriggerClientEvent('dt_battlepass:client:ResetDailyCounters', -1)
 end)
 
 lib.cron.new(Config.WeeklyRestart, function()
     for k,v in pairs(Players) do
         v.battlepass.weekly = {}
-        v.battlepass.freeClaims = {}
-        v.battlepass.premiumClaims = {}
+        -- Reset weekly task progress
+        if v.battlepass.taskProgress then
+            v.battlepass.taskProgress.distanceDriven = nil
+            v.battlepass.taskProgress.distanceTraveled = nil
+            v.battlepass.taskProgress.uniqueVehicles = nil
+            v.battlepass.taskProgress.jobsCompleted = nil
+            v.battlepass.taskProgress.medicalUsed = nil
+            v.battlepass.taskProgress.moneySpent = nil
+        end
     end
 
     local query = MySQL.query.await('SELECT * FROM `uniq_battlepass`')
@@ -646,8 +734,15 @@ lib.cron.new(Config.WeeklyRestart, function()
         for k, v in pairs(query) do
             v.battlepass = json.decode(v.battlepass)
             v.battlepass.weekly = {}
-            v.battlepass.freeClaims = {}
-            v.battlepass.premiumClaims = {}
+            -- Reset weekly task progress in database
+            if v.battlepass.taskProgress then
+                v.battlepass.taskProgress.distanceDriven = nil
+                v.battlepass.taskProgress.distanceTraveled = nil
+                v.battlepass.taskProgress.uniqueVehicles = nil
+                v.battlepass.taskProgress.jobsCompleted = nil
+                v.battlepass.taskProgress.medicalUsed = nil
+                v.battlepass.taskProgress.moneySpent = nil
+            end
 
             insertTable[#insertTable + 1] = { query = Query.INSERT, values = { v.owner, json.encode(v.battlepass, { sort_keys = true }) } }
         end
@@ -656,11 +751,38 @@ lib.cron.new(Config.WeeklyRestart, function()
 
         if not success then print(response) end
     end
+    
+    -- Reset weekly task counters on all clients
+    TriggerClientEvent('dt_battlepass:client:ResetWeeklyCounters', -1)
+    
+    -- Reset trucker cumulative distances in qbx_truckerjob
+    TriggerEvent('dt_battlepass:server:ResetWeeklyTruckerDistance')
 end)
 
 local function OpenBattlepass(playerId)
     TriggerClientEvent('uniq_battlepass:client:OpenMenu', playerId, Players[playerId], week)
 end
+
+-- Register server event for client-side task completion
+RegisterNetEvent('dt_battlepass:server:FinishTask', function(task)
+    local source = source
+    FinishTask(source, task)
+end)
+
+-- Track money spending (can be called from other resources)
+RegisterNetEvent('dt_battlepass:server:TrackSpending', function(amount)
+    local source = source
+    if amount and amount > 0 then
+        TriggerClientEvent('dt_battlepass:client:TrackSpending', source, amount)
+    end
+end)
+
+-- Export function for other resources to track spending
+exports('TrackSpending', function(source, amount)
+    if amount and amount > 0 then
+        TriggerClientEvent('dt_battlepass:client:TrackSpending', source, amount)
+    end
+end)
 
 exports('AddXP', AddXP)
 exports('RemoveXP', RemoveXP)

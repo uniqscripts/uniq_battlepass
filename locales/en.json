@@ -52,6 +52,8 @@
     "notify_wiped": "Your battlepass progress is wiped by admin",
     "notify_got_xp": "You got %s xp by admin",
     "notify_got_xp_playing": "You got %sxp for playing on server",
+    "notify_playtime_added": "You received %s playtime segment(s).",
+    "notify_playtime_added_admin": "Added %s playtime segment(s) to %s.",
     "notify_finished_task": "You have successfully finished %s task and got %s xp",
     "time": "%02d days %02d hours %02d minutes and %02d seconds",
     "notify_no_premium": "You don't have premium",

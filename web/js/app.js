@@ -133,64 +133,84 @@ function UnlockBattlepass() {
 
 function LoadTasks() {
     NUICallBack('GetTasks', {}).then((tasks) => {
-        const daily = document.getElementById('daily-tasks');
-        daily.innerHTML = '';
+        const dailyTasks = (tasks && Array.isArray(tasks.day)) ? tasks.day : ((tasks && tasks.day) || []);
+        const weeklyTasks = (tasks && Array.isArray(tasks.week)) ? tasks.week : ((tasks && tasks.week) || []);
 
-        for (let i = 0; i < tasks.day.length; i++) {
-            const task = tasks.day[i];
-
-            const taskBox = document.createElement('div');
-            taskBox.className = 'task-box';
-            taskBox.id = task.done === true ? 'completed-task-box' : 'uncompleted-task-box';
-
-            const taskHeading = document.createElement('h2');
-            taskHeading.className = 'task-nr-h2';
-            taskHeading.textContent = task.title;
-            taskBox.appendChild(taskHeading);
-
-            const taskStatus = document.createElement('h3');
-            taskStatus.className = 'task-status';
-            taskStatus.id = task.done === true ? 'task-completed' : 'task-uncompleted';
-            taskStatus.textContent = task.done === true ? locale('ui_completed') : locale('ui_uncompleted');
-            taskBox.appendChild(taskStatus);
-
-            const taskDetails = document.createElement('p');
-            taskDetails.className = 'task-details';
-            taskDetails.innerHTML = task.desc;
-            taskBox.appendChild(taskDetails);
-
-            daily.appendChild(taskBox);
-        }
-
-        const weekly = document.getElementById('weekly-tasks');
-        weekly.innerHTML = '';
-
-        for (let i = 0; i < tasks.week.length; i++) {
-            const task = tasks.week[i];
-
-            const taskBox = document.createElement('div');
-            taskBox.className = 'task-box';
-            taskBox.id = task.done === true ? 'completed-task-box' : 'uncompleted-task-box';
-
-            const taskHeading = document.createElement('h2');
-            taskHeading.className = 'task-nr-h2';
-            taskHeading.textContent = task.title;
-            taskBox.appendChild(taskHeading);
-
-            const taskStatus = document.createElement('h3');
-            taskStatus.className = 'task-status';
-            taskStatus.id = task.done === true ? 'task-completed' : 'task-uncompleted';
-            taskStatus.textContent = task.done === true ? locale('ui_completed') : locale('ui_uncompleted');
-            taskBox.appendChild(taskStatus);
-
-            const taskDetails = document.createElement('p');
-            taskDetails.className = 'task-details';
-            taskDetails.innerHTML = task.desc;
-            taskBox.appendChild(taskDetails);
-
-            weekly.appendChild(taskBox);
-        }
+        renderTasks(document.getElementById('daily-tasks'), dailyTasks);
+        renderTasks(document.getElementById('weekly-tasks'), weeklyTasks);
     });
+}
+
+function renderTasks(container, tasks) {
+    if (!container) {
+        return;
+    }
+
+    const list = Array.isArray(tasks) ? tasks : [];
+    container.innerHTML = '';
+
+    list.forEach((task) => {
+        const taskBox = document.createElement('div');
+        taskBox.className = 'task-box';
+        taskBox.id = task.done === true ? 'completed-task-box' : 'uncompleted-task-box';
+
+        const taskHeading = document.createElement('h2');
+        taskHeading.className = 'task-nr-h2';
+        taskHeading.textContent = task.title;
+        taskBox.appendChild(taskHeading);
+
+        const taskStatus = document.createElement('h3');
+        taskStatus.className = 'task-status';
+        taskStatus.id = task.done === true ? 'task-completed' : 'task-uncompleted';
+        taskStatus.textContent = task.done === true ? locale('ui_completed') : locale('ui_uncompleted');
+        taskBox.appendChild(taskStatus);
+
+        const taskDetails = document.createElement('p');
+        taskDetails.className = 'task-details';
+        taskDetails.innerHTML = task.desc;
+        taskBox.appendChild(taskDetails);
+
+        if (task.progress) {
+            taskBox.appendChild(createTaskProgress(task.progress, task.done));
+        }
+
+        container.appendChild(taskBox);
+    });
+}
+
+function createTaskProgress(progress, isCompleted) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'task-progress-wrapper';
+
+    const header = document.createElement('div');
+    header.className = 'task-progress-header';
+
+    const label = document.createElement('span');
+    label.className = 'task-progress-label';
+    label.textContent = progress.label || locale('ui_tasks');
+
+    const value = document.createElement('span');
+    value.className = 'task-progress-value';
+    value.textContent = progress.detail || '';
+
+    header.append(label, value);
+
+    const bar = document.createElement('div');
+    bar.className = 'task-progress-bar';
+
+    const fill = document.createElement('div');
+    fill.className = 'task-progress-fill';
+    const width = Math.max(0, Math.min(progress.percent ?? 0, 100));
+    fill.style.width = `${width}%`;
+
+    if (isCompleted === true) {
+        fill.classList.add('task-progress-fill-complete');
+    }
+
+    bar.appendChild(fill);
+    wrapper.append(header, bar);
+
+    return wrapper;
 }
 
 function formatNumberWithCommas(number, currencySymbol = '') {

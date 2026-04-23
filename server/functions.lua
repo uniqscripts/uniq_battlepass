@@ -10,8 +10,6 @@ if Inv.core then
     end
 end
 
-local exp = Framework.esx and exports['es_extended']:getSharedObject() or exports['qb-core']:GetCoreObject()
-
 function AddItem(playerId, item, amount, metadata)
     if Inv.ox then
         Inv.exp:AddItem(playerId, item, amount, metadata)
@@ -28,31 +26,9 @@ function AddItem(playerId, item, amount, metadata)
 end
 
 
-function GetItemAmount(playerId, name)
-    if Framework.esx then
-        local xPlayer = exp.GetPlayerFromId(playerId)
-        local item = xPlayer.getInventoryItem(name)
-
-        if item then
-            for k,v in pairs(item) do
-                if k == 'amount' or k == 'count' then return v end
-            end
-        end
-    elseif Framework.qb then
-        local Player = exp.Functions.GetPlayer(playerId)
-        local item = Player.Functions.GetItemByName(name)
-
-        if item then
-            for k,v in pairs(item) do
-                if k == 'amount' then
-                    return v
-                end
-
-                if k == 'count' then
-                    return v
-                end
-            end
-        end
+function GetItemAmount(playerId, item)
+    if Inv.ox then
+        return Inv.exp:Search(playerId, 'count', item) or 0
     end
 
     return 0
@@ -60,12 +36,7 @@ end
 
 
 function RemoveItem(playerId, item, amount)
-    if Framework.esx then
-        local xPlayer = exp.GetPlayerFromId(playerId)
-        xPlayer.removeInventoryItem(item, amount)
-    elseif Framework.qb then
-        local Player = exp.Functions.GetPlayer(playerId)
-
-        Player.Functions.RemoveItem(item, amount)
+    if Inv.ox then
+        Inv.exp:RemoveItem(playerId, item, amount)
     end
 end

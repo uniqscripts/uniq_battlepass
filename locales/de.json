@@ -55,6 +55,8 @@
     "notify_wiped": "Dein Fortschritt im Battle Pass wurde vom Admin zurückgesetzt",
     "notify_got_xp": "Du hast %s XP vom Admin erhalten",
     "notify_got_xp_playing": "Du hast %s XP für das Spielen auf dem Server erhalten",
+    "notify_playtime_added": "Du hast %s Spielzeit-Segment(e) erhalten.",
+    "notify_playtime_added_admin": "Du hast %s Spielzeit-Segment(e) zu %s hinzugefügt.",
     "time": "%02d days %02d hours %02d minutes and %02d seconds",
     "notify_no_premium": "You don't have premium",
     "notify_expiress": "Your premium will last for %s",
